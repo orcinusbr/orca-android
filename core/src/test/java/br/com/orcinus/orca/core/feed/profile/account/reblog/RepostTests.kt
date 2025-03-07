@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -21,6 +21,7 @@ import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
+import br.com.orcinus.orca.std.func.monad.Maybe
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -53,7 +54,7 @@ internal class RepostTests {
         override suspend fun toOwnedPost(): OwnedPost {
           return let {
             object : OwnedPost(it) {
-              override suspend fun remove() {}
+              override suspend fun remove() = Maybe.successful()
             }
           }
         }
@@ -71,7 +72,7 @@ internal class RepostTests {
         sampleRepost.uri
       ) {
         object : OwnedPost(it) {
-          override suspend fun remove() {}
+          override suspend fun remove() = Maybe.successful()
         }
       }
     )

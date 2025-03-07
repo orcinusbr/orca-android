@@ -28,12 +28,13 @@ import org.opentest4j.AssertionFailedError
 /**
  * Asserts that the [Maybe] holds a successful value.
  *
- * @param R The successful value.
+ * @param V The successful value.
  * @throws AssertionFailedError If the [Maybe] holds a failure.
  */
-fun <R> Assert<Maybe<*, R>>.isSuccessful() =
+@Throws(AssertionFailedError::class)
+fun <V> Assert<Maybe<*, V>>.isSuccessful() =
   try {
-    prop(Maybe<*, R>::getValueOrThrow)
+    prop(Maybe<*, V>::getValueOrThrow)
   } catch (exception: Exception) {
     expected("to be successful but was failed:${show(exception)}")
   }
@@ -41,13 +42,18 @@ fun <R> Assert<Maybe<*, R>>.isSuccessful() =
 /**
  * Asserts that the [Maybe] holds a failure.
  *
- * @param L [Exception] because of which the value cannot be obtained.
+ * @param E [Exception] because of which the value cannot be obtained.
  * @throws AssertionFailedError If the [Maybe] holds a successful value.
  */
-fun <L : Exception> Assert<Maybe<L, *>>.isFailed() =
+@Throws(AssertionFailedError::class)
+fun <E : Exception> Assert<Maybe<E, *>>.isFailed() =
   transform {
-      it.takeIf(Maybe<L, *>::isFailed)
+      it.takeIf(Maybe<E, *>::isFailed)
         ?: expected("to be failed but was successful:${show(it.getValueOrThrow())}")
     }
-    .prop(Maybe<L, *>::getExceptionOrNull)
+    .prop(Maybe<E, *>::getExceptionOrNull)
+    .transform {
+      @Suppress("UNCHECKED_CAST")
+      it as E?
+    }
     .isNotNull()

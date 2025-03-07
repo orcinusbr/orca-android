@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -35,7 +35,7 @@ import java.net.URI
  *   will be provided.
  */
 internal class MastodonEditableProfile(
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   override val id: String,
   override val account: Account,

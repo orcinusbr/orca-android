@@ -18,13 +18,15 @@ package br.com.orcinus.orca.feature.composer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import br.com.orcinus.orca.std.func.monad.Maybe
 import br.com.orcinus.orca.std.image.android.AndroidImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class ComposerViewModel
-private constructor(val avatarLoaderDeferred: Deferred<AndroidImageLoader<*>>) : ViewModel() {
+private constructor(val avatarLoaderDeferredResult: Deferred<Maybe<*, AndroidImageLoader<*>>>) :
+  ViewModel() {
   private val textFlow = MutableStateFlow(Markdown.empty)
 
   fun setText(text: Markdown) {
@@ -35,8 +37,9 @@ private constructor(val avatarLoaderDeferred: Deferred<AndroidImageLoader<*>>) :
 
   companion object {
     @JvmStatic
-    fun createFactory(avatarLoaderDeferred: Deferred<AndroidImageLoader<*>>) = viewModelFactory {
-      initializer { ComposerViewModel(avatarLoaderDeferred) }
-    }
+    fun createFactory(avatarLoaderDeferred: Deferred<Maybe<*, AndroidImageLoader<*>>>) =
+      viewModelFactory {
+        initializer { ComposerViewModel(avatarLoaderDeferred) }
+      }
   }
 }

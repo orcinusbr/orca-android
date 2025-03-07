@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,29 +17,34 @@ package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.prop
+import assertk.coroutines.assertions.suspendCall
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
+import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.parametersOf
 import kotlin.test.Test
 
 internal class UrlEncodedConfigurationEmptyTests {
   @Test
-  fun appendsParameters() {
-    runRequesterTest {
-      assertThat(
-          requester
-            .post(route) {
-              parameters {
-                append("id", "0")
-                append("name", "Jean")
-              }
-            }
-            .request
-            .content
-            .let { it as FormDataContent }
-            .formData
-        )
-        .isEqualTo(parametersOf("id" to listOf("0"), "name" to listOf("Jean")))
-    }
+  fun appendsParameters() = runRequesterTest {
+    assertThat(requester)
+      .suspendCall("post") {
+        it.post(route) {
+          parameters {
+            append("id", "0")
+            append("name", "Jean")
+          }
+        }
+      }
+      .isSuccessful()
+      .prop(HttpResponse::request)
+      .prop(HttpRequest::content)
+      .isInstanceOf<FormDataContent>()
+      .prop(FormDataContent::formData)
+      .isEqualTo(parametersOf("id" to listOf("0"), "name" to listOf("Jean")))
   }
 }

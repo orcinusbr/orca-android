@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.search.cache
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -46,12 +47,13 @@ import java.net.URI
  */
 internal class MastodonProfileSearchResultsFetcher(
   private val context: Context,
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<List<ProfileSearchResult>>() {
-  override suspend fun onFetch(key: String): List<ProfileSearchResult> {
-    return requester
+  @Throws(AuthenticationLock.FailedAuthenticationException::class)
+  override suspend fun onFetch(key: String) =
+    requester
       .authenticated()
       .get({
         path("api")
@@ -62,8 +64,10 @@ internal class MastodonProfileSearchResultsFetcher(
           .parameter("q", key)
           .build()
       })
-      .body<MastodonSearch>()
-      .accounts
-      .map { it.toProfileSearchResult(avatarLoaderProvider) }
-  }
+      .map {
+        it.body<MastodonSearch>().accounts.map { account ->
+          account.toProfileSearchResult(avatarLoaderProvider)
+        }
+      }
+      .getValueOrThrow()
 }

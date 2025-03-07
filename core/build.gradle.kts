@@ -21,6 +21,7 @@ plugins {
 }
 
 dependencies {
+  api(project(":std:func"))
   api(project(":std:image"))
   api(project(":std:markdown"))
   api(libs.kotlin.coroutines.core)
@@ -33,6 +34,7 @@ dependencies {
   testImplementation(project(":core:sample-test"))
   testImplementation(project(":core-test"))
   testImplementation(project(":ext:testing"))
+  testImplementation(project(":std:func-test"))
   testImplementation(libs.assertk.coroutines)
   testImplementation(libs.konsist)
   testImplementation(libs.kotlin.coroutines.test)

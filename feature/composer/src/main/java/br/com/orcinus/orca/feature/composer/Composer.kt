@@ -71,10 +71,10 @@ internal fun Composer(
   onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val avatarLoader by viewModel.avatarLoaderDeferred.collectAsState(initialValue = null)
+  val avatarLoaderResult by viewModel.avatarLoaderDeferredResult.collectAsState(initialValue = null)
 
   Composer(
-    avatarLoader,
+    avatarLoaderResult?.getValueOrNull(),
     onTextChange = viewModel::setText,
     onCompose = viewModel::compose,
     onBackwardsNavigation,

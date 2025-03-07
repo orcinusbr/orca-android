@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -63,7 +63,7 @@ import java.net.URI
  */
 internal class MastodonPostStorage(
   private val context: Context,
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val profileCache: Cache<Profile>,
   private val profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val postEntityDao: MastodonPostEntityDao,

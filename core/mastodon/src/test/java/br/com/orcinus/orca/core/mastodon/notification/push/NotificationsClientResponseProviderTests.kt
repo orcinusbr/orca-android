@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,11 +18,13 @@ package br.com.orcinus.orca.core.mastodon.notification.push
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
+import assertk.coroutines.assertions.suspendCall
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
-import io.ktor.client.call.body
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import java.net.URI
 import java.time.ZonedDateTime
@@ -37,7 +39,8 @@ internal class NotificationsClientResponseProviderTests {
       baseURI = requester.baseURI
       assertThat(requester)
         .transform("get") { it.get(route) }
-        .transform("body") { it.body<String>() }
+        .isSuccessful()
+        .suspendCall("bodyAsText", HttpResponse::bodyAsText)
         .isEmpty()
     }
   }
@@ -59,7 +62,8 @@ internal class NotificationsClientResponseProviderTests {
       baseURI = requester.baseURI
       assertThat(requester)
         .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
-        .transform { it.bodyAsText() }
+        .isSuccessful()
+        .suspendCall("bodyAsText", HttpResponse::bodyAsText)
         .transform("Json.decodeFromString") {
           Json.decodeFromString(PushNotificationService.dtosSerializer, it)
         }

@@ -18,6 +18,7 @@ package br.com.orcinus.orca.feature.composer
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.platform.core.image.createSample
 import br.com.orcinus.orca.platform.testing.context
+import br.com.orcinus.orca.std.func.monad.Maybe
 import br.com.orcinus.orca.std.image.android.AndroidImageLoader
 import br.com.orcinus.orca.std.injector.module.injection.Injection
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
@@ -25,9 +26,12 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 
 internal object SampleComposerModule : ComposerModule() {
-  override val avatarLoaderDeferred: Injection<Deferred<AndroidImageLoader<*>>> = lazyInjectionOf {
-    CompletableDeferred(
-      AndroidImageLoader.Provider.createSample(context).provide(AuthorImageSource.Default)
-    )
-  }
+  override val avatarLoaderDeferred: Injection<Deferred<Maybe<*, AndroidImageLoader<*>>>> =
+    lazyInjectionOf {
+      CompletableDeferred(
+        Maybe.successful<Exception, _>(
+          AndroidImageLoader.Provider.createSample(context).provide(AuthorImageSource.Default)
+        )
+      )
+    }
 }

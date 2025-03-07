@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.first
  *   [Mastodon profile entities][MastodonProfileEntity].
  */
 internal class MastodonProfileStorage(
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val entityDao: MastodonProfileEntityDao

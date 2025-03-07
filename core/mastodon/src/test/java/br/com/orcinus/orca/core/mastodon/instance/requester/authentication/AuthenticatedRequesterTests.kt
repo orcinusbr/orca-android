@@ -64,7 +64,7 @@ internal class AuthenticatedRequesterTests {
 
   @Test(expected = Injector.ModuleNotRegisteredException::class)
   fun throwsWhenCreatingAnAuthenticatedRequesterWithoutHavingRegisteredACoreModule() {
-    lateinit var requester: Requester
+    lateinit var requester: Requester<*>
     runRequesterTest { requester = this.requester }
     requester.authenticated()
   }

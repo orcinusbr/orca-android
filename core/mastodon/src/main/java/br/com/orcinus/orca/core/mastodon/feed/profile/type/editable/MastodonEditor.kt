@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -35,7 +35,7 @@ import kotlin.io.path.name
  *
  * @property requester [Requester] by which editing requests are performed.
  */
-internal class MastodonEditor(private val requester: Requester) : Editor {
+internal class MastodonEditor(private val requester: Requester<*>) : Editor {
   /** [URI] to which requests for editing a [MastodonEditableProfile] are to be sent. */
   private val editRoute: HostedURLBuilder.() -> URI = {
     path("api").path("v1").path("accounts").path("update_credentials").build()

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.app.module.feature.profiledetails
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfileProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowService
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
@@ -28,7 +29,12 @@ import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 internal class MainProfileDetailsModule(context: Context) :
   ProfileDetailsModule(
     lazyInjectionOf { profileProvider },
-    lazyInjectionOf { MastodonFollowService(Injector.get<Requester>(), profileProvider) },
+    lazyInjectionOf {
+      MastodonFollowService(
+        Injector.get<Requester<AuthenticationLock.FailedAuthenticationException>>(),
+        profileProvider
+      )
+    },
     lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
     lazyInjectionOf { MainProfileDetailsBoundary(context) }
   ) {

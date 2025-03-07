@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -34,7 +34,9 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFo
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
+import br.com.orcinus.orca.core.module.authenticationLock
+import br.com.orcinus.orca.std.func.monad.Maybe
+import br.com.orcinus.orca.std.func.monad.flatMap
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
@@ -100,26 +102,26 @@ data class MastodonAccount(
    */
   internal suspend fun toProfile(
     context: Context,
-    requester: Requester,
+    requester: Requester<*>,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
-  ): Profile {
-    return if (isOwned()) {
-      toEditableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
-    } else {
-      toFollowableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
+  ) =
+    isOwned().flatMap { isOwned ->
+      if (isOwned) {
+        toEditableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
+      } else {
+        toFollowableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
+      }
     }
-  }
 
   /**
-   * Whether the currently authenticated [Actor] is the owner of this [Account].
+   * Returns whether the currently authenticated [Actor] is the owner of this [Account].
    *
    * @param authenticationLock [AuthenticationLock] through which the ID of the [Actor] will be
    *   compared to that of this [MastodonAccount].
    */
-  suspend fun isOwned(authenticationLock: SomeAuthenticationLock): Boolean {
-    return authenticationLock.scheduleUnlock { id == it.id }
-  }
+  suspend fun isOwned(authenticationLock: SomeAuthenticationLock) =
+    authenticationLock.scheduleUnlock { id == it.id }
 
   /**
    * Converts this [MastodonAccount] into a [ProfileSearchResult].
@@ -143,7 +145,7 @@ data class MastodonAccount(
   }
 
   /**
-   * Whether the currently authenticated [Actor] is the owner of this [MastodonAccount].
+   * Returns whether the currently authenticated [Actor] is the owner of this [MastodonAccount].
    *
    * @throws Injector.ModuleNotRegisteredException If a [CoreModule] is not registered in the
    *   [Injector].
@@ -154,11 +156,7 @@ data class MastodonAccount(
       "`AuthenticationLock`.",
     ReplaceWith("isOwned(authenticationLock)")
   )
-  private suspend fun isOwned(): Boolean {
-    val authenticationLock =
-      Injector.from<CoreModule>().instanceProvider().provide().authenticationLock
-    return isOwned(authenticationLock)
-  }
+  private suspend fun isOwned() = isOwned(Injector.from<CoreModule>().authenticationLock())
 
   /**
    * Converts this [MastodonAccount] into a [MastodonEditableProfile].
@@ -174,28 +172,24 @@ data class MastodonAccount(
    */
   private fun toEditableProfile(
     context: Context,
-    requester: Requester,
+    requester: Requester<*>,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
-  ): MastodonEditableProfile {
-    val account = toAccount()
-    val avatarURI = URI(avatar)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
-    val bio = Markdown.fromHtml(context, note)
-    val uri = URI(uri)
-    return MastodonEditableProfile(
-      requester,
-      postPaginatorProvider,
-      id,
-      account,
-      avatarLoader,
-      displayName,
-      bio,
-      followersCount,
-      followingCount,
-      uri
+  ) =
+    Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+      MastodonEditableProfile(
+        requester,
+        postPaginatorProvider,
+        id,
+        toAccount(),
+        avatarLoader = avatarLoaderProvider.provide(URI(avatar)),
+        displayName,
+        bio = Markdown.fromHtml(context, note),
+        followersCount,
+        followingCount,
+        URI(uri)
+      )
     )
-  }
 
   /**
    * Converts this [MastodonAccount] into a [MastodonFollowableProfile].
@@ -211,42 +205,40 @@ data class MastodonAccount(
    */
   private suspend fun toFollowableProfile(
     context: Context,
-    requester: Requester,
+    requester: Requester<*>,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
-  ): MastodonFollowableProfile<Follow> {
+  ): Maybe<AuthenticationLock.FailedAuthenticationException, MastodonFollowableProfile<Follow>> {
     val account = toAccount()
     val avatarURI = URI(avatar)
     val avatarLoader = avatarLoaderProvider.provide(avatarURI)
     val bio = Markdown.fromHtml(context, note)
     val uri = URI(uri)
-    val follow =
-      requester
-        .authenticated()
-        .get({
-          path("api")
-            .path("v1")
-            .path("accounts")
-            .path("relationships")
-            .query()
-            .parameter("id", id)
-            .build()
-        })
-        .body<List<MastodonRelationship>>()
-        .first()
-        .toFollow(locked)
-    return MastodonFollowableProfile(
-      postPaginatorProvider,
-      id,
-      account,
-      avatarLoader,
-      displayName,
-      bio,
-      follow,
-      followersCount,
-      followingCount,
-      uri
-    )
+    return requester
+      .authenticated()
+      .get({
+        path("api")
+          .path("v1")
+          .path("accounts")
+          .path("relationships")
+          .query()
+          .parameter("id", id)
+          .build()
+      })
+      .map {
+        MastodonFollowableProfile(
+          postPaginatorProvider,
+          id,
+          account,
+          avatarLoader,
+          displayName,
+          bio,
+          follow = it.body<List<MastodonRelationship>>().first().toFollow(locked),
+          followersCount,
+          followingCount,
+          uri
+        )
+      }
   }
 
   companion object {

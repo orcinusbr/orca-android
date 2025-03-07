@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
+import androidx.annotation.CheckResult
 import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 
@@ -25,9 +26,10 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
  */
 data class MastodonOwnedPost internal constructor(private val delegate: MastodonPost) :
   OwnedPost(delegate) {
-  override suspend fun remove() {
+  @CheckResult
+  override suspend fun remove() =
     delegate.requester
       .authenticated()
       .delete({ path("api").path("v1").path("statuses").path(id).build() })
-  }
+      .unit()
 }

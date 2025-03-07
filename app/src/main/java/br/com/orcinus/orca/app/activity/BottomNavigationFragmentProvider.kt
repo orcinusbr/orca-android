@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,9 +16,11 @@
 package br.com.orcinus.orca.app.activity
 
 import android.view.MenuItem
+import androidx.annotation.CheckResult
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import br.com.orcinus.orca.app.R
+import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.feature.feed.FeedFragment
@@ -29,6 +31,7 @@ import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication
 import br.com.orcinus.orca.platform.navigation.transition.suddenly
+import br.com.orcinus.orca.std.func.monad.Maybe
 
 /** Provides a [Fragment] to which each bottom navigation tab in the [OrcaActivity] navigates. */
 internal enum class BottomNavigationFragmentProvider {
@@ -36,38 +39,26 @@ internal enum class BottomNavigationFragmentProvider {
   FEED {
     override val id = R.id.feed
 
-    override suspend fun provide(
-      backStack: BackStack,
-      authenticationLock: SomeAuthenticationLock
-    ): FeedFragment {
-      return authenticationLock.scheduleUnlock { FeedFragment(backStack, it.id) }
-    }
+    override suspend fun provide(backStack: BackStack, authenticationLock: SomeAuthenticationLock) =
+      authenticationLock.scheduleUnlock { FeedFragment(backStack, it.id) }
   },
 
   /** Provider of a [Fragment] with the details of the profile of the authenticated [Actor]. */
   PROFILE_DETAILS {
     override val id = R.id.profile_details
 
-    override suspend fun provide(
-      backStack: BackStack,
-      authenticationLock: SomeAuthenticationLock
-    ): ProfileDetailsFragment {
-      return authenticationLock.scheduleUnlock {
+    override suspend fun provide(backStack: BackStack, authenticationLock: SomeAuthenticationLock) =
+      authenticationLock.scheduleUnlock {
         ProfileDetailsFragment(backStack, BackwardsNavigationState.Unavailable, it.id)
       }
-    }
   },
 
   /** Provider of a [SettingsFragment]. */
   SETTINGS {
     override val id = R.id.settings
 
-    override suspend fun provide(
-      backStack: BackStack,
-      authenticationLock: SomeAuthenticationLock
-    ): SettingsFragment {
-      return SettingsFragment()
-    }
+    override suspend fun provide(backStack: BackStack, authenticationLock: SomeAuthenticationLock) =
+      Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(SettingsFragment())
   };
 
   /**
@@ -82,13 +73,17 @@ internal enum class BottomNavigationFragmentProvider {
    * which navigation is to be performed whenever it is clicked. The tab to which this provider
    * refers is the one identified with the specified [id].
    *
+   * In case calling this method results in a failure, it will have been from an authentication
+   * unlock.
+   *
    * @param backStack [BackStack] with which the [Fragment] is created.
    * @param authenticationLock Requires authentication for creating the [Fragment].
    */
+  @CheckResult
   protected abstract suspend fun provide(
     backStack: BackStack,
     authenticationLock: SomeAuthenticationLock
-  ): Fragment
+  ): Maybe<AuthenticationLock.FailedAuthenticationException, Fragment>
 
   companion object {
     /**
@@ -98,6 +93,10 @@ internal enum class BottomNavigationFragmentProvider {
      * @param backStack [BackStack] to which the [Fragment] will be added.
      * @param authenticationLock Requires authentication for creating the [Fragment].
      * @param id ID of the bottom navigation tab.
+     * @throws AuthenticationLock.FailedAuthenticationException If authentication fails while
+     *   scheduling an unlock.
+     * @throws NoSuchElementException If a [BottomNavigationFragmentProvider] identified as [id]
+     *   does not exist.
      * @see MenuItem.getItemId
      */
     suspend fun navigate(
@@ -105,12 +104,13 @@ internal enum class BottomNavigationFragmentProvider {
       backStack: BackStack,
       authenticationLock: SomeAuthenticationLock,
       @IdRes id: Int
-    ) {
-      val provider = entries.find { it.id == id } ?: throw NoSuchElementException("$id")
-      val fragment = provider.provide(backStack, authenticationLock)
-
-      @Suppress("DiscouragedApi")
-      navigator.navigateOrThrow(suddenly(), disallowingDuplication(), fragment::class) { fragment }
-    }
+    ) =
+      (entries.find { it.id == id } ?: throw NoSuchElementException("$id"))
+        .provide(backStack, authenticationLock)
+        .map {
+          @Suppress("DiscouragedApi")
+          navigator.navigateOrThrow(suddenly(), disallowingDuplication(), it::class) { it }
+        }
+        .getValueOrThrow()
   }
 }

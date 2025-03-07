@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.func.monad.Maybe
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
@@ -59,7 +60,7 @@ private class DelegatorHttpClientEngineFactory(private val delegate: ClientRespo
  * @property requester [Requester] that's been created.
  */
 @InternalRequesterApi
-internal class RequesterTestScope<T : Requester>(val delegate: TestScope, val requester: T) :
+internal class RequesterTestScope<T : Requester<*>>(val delegate: TestScope, val requester: T) :
   CoroutineScope by delegate {
   /**
    * Produces a default route from the [requester]'s base [URI] to which the requests can be sent.
@@ -80,13 +81,13 @@ internal class RequesterTestScope<T : Requester>(val delegate: TestScope, val re
 @InternalRequesterApi
 @OptIn(ExperimentalContracts::class)
 internal inline fun retryCountOf(
-  crossinline request: suspend RequesterTestScope<Requester>.() -> HttpResponse
+  crossinline request: suspend RequesterTestScope<Requester<*>>.() -> Maybe<*, HttpResponse>
 ): Int {
   contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
   val clientResponseProvider = CountingClientResponseProvider {
     respondError(HttpStatusCode.NotImplemented)
   }
-  runRequesterTest(clientResponseProvider) { request() }
+  runRequesterTest(clientResponseProvider) { request().getValueOrThrow() }
   return clientResponseProvider.count.dec()
 }
 
@@ -101,16 +102,16 @@ internal inline fun retryCountOf(
 internal inline fun runRequesterTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   context: CoroutineContext = EmptyCoroutineContext,
-  crossinline body: suspend RequesterTestScope<Requester>.() -> Unit
+  crossinline body: suspend RequesterTestScope<Requester<*>>.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   val requester =
-    Requester(
+    Requester<Exception>(
       NoOpLogger,
       RequesterTestScope.baseURI,
       httpClientEngineFactoryOf(clientResponseProvider)
     )
-  runTest(context) { RequesterTestScope(this, requester).body() }
+  runTest(context) { body(RequesterTestScope(this, requester)) }
 }
 
 /**

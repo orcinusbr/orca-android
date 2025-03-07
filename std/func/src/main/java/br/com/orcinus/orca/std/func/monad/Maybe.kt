@@ -37,7 +37,8 @@ package br.com.orcinus.orca.std.func.monad
  *   (when failed).
  */
 @JvmInline
-value class Maybe<out E : Exception, out V> private constructor(private val value: Any?) {
+value class Maybe<out E : Exception, out V>
+private constructor(@PublishedApi internal val value: Any?) {
   /** Whether the value has been obtained successfully. */
   val isSuccessful
     get() = !isFailed
@@ -47,14 +48,18 @@ value class Maybe<out E : Exception, out V> private constructor(private val valu
     get() = value is Failure
 
   override fun toString() =
-    if (isSuccessful) "Maybe.success($value)" else "Maybe.failure(${(value as Failure).exception})"
+    if (isSuccessful) {
+      "Maybe.successful($value)"
+    } else {
+      "Maybe.failed(${(value as Failure).exception})"
+    }
 
   /**
-   * Erases information about the successful value provided by this [Maybe] by converting it into a
-   * `Maybe<_, Unit>`. Intended for scenarios in which an internal context should not be leaked to
+   * Erases information about the successful value held by this [Maybe] by converting it into a
+   * `Maybe<E, Unit>`. Intended for scenarios in which an internal context should not be leaked to
    * consumers, functionally indicating to them only that obtaining the value _may_ throw.
    */
-  fun unit() = map {}
+  @Suppress("UNCHECKED_CAST") fun unit() = if (value is Unit) this as Maybe<E, Unit> else map {}
 
   /**
    * Produces a [Maybe] whose value is the result of applying the given transformation to that of
@@ -65,7 +70,10 @@ value class Maybe<out E : Exception, out V> private constructor(private val valu
    */
   @Suppress("UNCHECKED_CAST")
   inline fun <T> map(transform: (V) -> T) =
-    if (isSuccessful) successful(transform(getValueOrThrow())) else this as Maybe<E, T>
+    if (isSuccessful) successful(transform(value as V)) else this as Maybe<E, T>
+
+  /** Obtains the successful value or returns `null` in case this is failed. */
+  fun getValueOrNull() = (this as Maybe<*, V?>).getValueOrDefault(null)
 
   /** Obtains the successful value or throws in case this [Maybe] holds a failure. */
   @Suppress("UNCHECKED_CAST")
@@ -78,8 +86,34 @@ value class Maybe<out E : Exception, out V> private constructor(private val valu
    */
   fun getExceptionOrNull() = (value as? Failure)?.exception
 
+  /**
+   * Performs the given [action] on the value in case this is successful.
+   *
+   * @param action Operation to be executed with the successful value of this [Maybe].
+   */
+  inline fun onSuccessful(action: (V) -> Unit) = apply {
+    if (isSuccessful) {
+      @Suppress("UNCHECKED_CAST") action(value as V)
+    }
+  }
+
+  /**
+   * Obtains the successful value or returns the given default one in case this is failed.
+   *
+   * @param defaultValue Value returned by default if this [Maybe] holds a failure.
+   */
+  @Suppress("UNCHECKED_CAST")
+  internal fun getValueOrDefault(defaultValue: @UnsafeVariance V) =
+    if (isSuccessful) value as V else defaultValue
+
   companion object {
     override fun toString() = "Maybe.Companion"
+
+    /**
+     * Produces a [Maybe] that holds a successful [Unit], for contexts in which any failures are
+     * expected.
+     */
+    @JvmStatic fun successful(): Maybe<*, Unit> = successful<Exception, _>(Unit)
 
     /**
      * Produces a [Maybe] that holds a successful value.
@@ -123,7 +157,7 @@ inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.onEach(
 
 /**
  * Returns the [Maybe] resulted from the transformation in case it is not a failure; otherwise, the
- * receiver one is cast to `Maybe<_, R>` and returned (which is safe because its successful value is
+ * receiver one is cast to `Maybe<E, R>` and returned (which is safe because its successful value is
  * nonexistent and, thus, unobtainable).
  *
  * @param E [Exception] because of which the value cannot be obtained.
@@ -136,21 +170,11 @@ inline fun <E : Exception, V, T> Maybe<E, V>.flatMap(transform: (V) -> Maybe<E, 
 
 /**
  * Returns the [Maybe] resulted from this one in case this one is not a failure; otherwise, this one
- * is cast to `Maybe<_, R>` and returned (which is safe because its successful value is nonexistent
+ * is cast to `Maybe<E, R>` and returned (which is safe because its successful value is nonexistent
  * and, thus, unobtainable).
  *
  * @param E [Exception] because of which the value cannot be obtained.
  * @param V Value resulted from the nested [Maybe].
  */
 @Suppress("UNCHECKED_CAST")
-fun <E : Exception, V> Maybe<E, Maybe<E, V>>.flatten() = getOrDefault(this as Maybe<E, V>)
-
-/**
- * Obtains the successful value held by this [Maybe] or returns the given default one in case it is
- * failed.
- *
- * @param V Value to be returned.
- * @param defaultValue Value returned by default if this [Maybe] holds a failure.
- */
-private fun <V> Maybe<*, V>.getOrDefault(defaultValue: V) =
-  if (isSuccessful) getValueOrThrow() else defaultValue
+fun <E : Exception, V> Maybe<E, Maybe<E, V>>.flatten() = getValueOrDefault(this as Maybe<E, V>)

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,6 +23,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.std.func.monad.onEach
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import io.ktor.client.call.body
@@ -50,7 +51,7 @@ import kotlinx.coroutines.flow.flow
  */
 internal class MastodonRepostStat(
   private val context: Context,
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val id: String,
@@ -62,10 +63,11 @@ internal class MastodonRepostStat(
       emit(
         requester
           .get({ path("api").path("v1").path("statuses").path(id).path("reblogged_by").build() })
-          .body<List<MastodonAccount>>()
-          .map {
+          .map { it.body<List<MastodonAccount>>() }
+          .onEach {
             it.toProfile(context, requester, avatarLoaderProvider, profilePostPaginatorProvider)
           }
+          .getValueOrThrow()
       )
     }
   }

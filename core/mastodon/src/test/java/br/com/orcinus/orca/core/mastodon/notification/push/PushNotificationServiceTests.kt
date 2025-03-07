@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -64,7 +64,7 @@ internal class PushNotificationServiceTests {
   fun instantiatingFromEmptyConstructorRetrievesInjectedRequester() {
     var isRetrieved = false
     runAuthenticatedRequesterTest {
-      Injector.injectLazily<Requester> {
+      Injector.injectLazily<Requester<*>> {
         isRetrieved = true
         requester
       }

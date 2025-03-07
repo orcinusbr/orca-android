@@ -17,7 +17,9 @@ package br.com.orcinus.orca.core.auth
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
+import assertk.coroutines.assertions.suspendCall
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.auth.actor.FixedActorProvider
@@ -27,6 +29,7 @@ import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
+import br.com.orcinus.orca.std.func.test.monad.isFailed
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.nanoseconds
@@ -38,6 +41,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 
 internal class AuthenticationLockTests {
+  @Test
+  fun failsWhenAuthenticationFails() {
+    val authorizer = AuthorizerBuilder().build()
+    val actorProvider = FixedActorProvider(Actor.Unauthenticated)
+    val lock = AuthenticationLock(authorizer, actorProvider)
+    runTest {
+      assertThat(lock)
+        .suspendCall("scheduleUnlock") { it.scheduleUnlock {} }
+        .isFailed()
+        .isInstanceOf<AuthenticationLock.FailedAuthenticationException>()
+    }
+  }
+
   @Test
   fun isNotifiedOfUnlock() {
     var isNotified = false
@@ -55,7 +71,7 @@ internal class AuthenticationLockTests {
           return FailedAuthenticationException(null)
         }
       }
-    runTest { lock.scheduleUnlock {} }
+    runTest { lock.scheduleUnlock {}.getValueOrThrow() }
     assertThat(isNotified, name = "isNotified").isTrue()
   }
 
@@ -76,10 +92,7 @@ internal class AuthenticationLockTests {
           return FailedAuthenticationException(null)
         }
       }
-    runTest {
-      lock.scheduleUnlock {}
-      lock.scheduleUnlock {}
-    }
+    runTest { repeat(2) { lock.scheduleUnlock {}.getValueOrThrow() } }
     assertThat(notificationCount, name = "notificationCount").isEqualTo(2)
   }
 
@@ -93,7 +106,11 @@ internal class AuthenticationLockTests {
         hasBeenAuthenticated = true
         Actor.Authenticated.sample
       }
-    runTest { AuthenticationLock(authorizer, authenticator, actorProvider).scheduleUnlock {} }
+    runTest {
+      AuthenticationLock(authorizer, authenticator, actorProvider)
+        .scheduleUnlock {}
+        .getValueOrThrow()
+    }
     assertThat(hasBeenAuthenticated).isTrue()
   }
 
@@ -106,9 +123,9 @@ internal class AuthenticationLockTests {
         }
       val authorizer = AuthorizerBuilder().build()
       var hasListenerBeenNotified = false
-      AuthenticationLock(authorizer, actorProvider).scheduleUnlock {
-        hasListenerBeenNotified = true
-      }
+      AuthenticationLock(authorizer, actorProvider)
+        .scheduleUnlock { hasListenerBeenNotified = true }
+        .getValueOrThrow()
       assertThat(hasListenerBeenNotified, name = "hasListenerBeenNotified").isTrue()
     }
   }
@@ -122,8 +139,8 @@ internal class AuthenticationLockTests {
           (this as ActorProvider).remember(Actor.Authenticated.sample)
         }
       val lock = AuthenticationLock(authorizer, actorProvider)
-      lock.scheduleUnlock { delay(32.seconds) }
-      repeat(1_024) { lock.scheduleUnlock { delay(8.seconds) } }
+      lock.scheduleUnlock { delay(32.seconds) }.getValueOrThrow()
+      repeat(1_024) { lock.scheduleUnlock { delay(8.seconds) }.getValueOrThrow() }
       assertThat(
           @OptIn(ExperimentalCoroutinesApi::class)
           testScheduler.currentTime.milliseconds.inWholeSeconds
@@ -138,16 +155,20 @@ internal class AuthenticationLockTests {
       val actorProvider = FixedActorProvider(Actor.Authenticated.sample)
       val authorizer = AuthorizerBuilder().build()
       val lock = AuthenticationLock(authorizer, actorProvider)
-      lock.scheduleUnlock {
-        repeat(2_048) {
-          launch(Dispatchers.Unconfined) {
-            lock.scheduleUnlock {
-              delay(1.nanoseconds)
-              lock.scheduleUnlock {}
+      lock
+        .scheduleUnlock {
+          repeat(2_048) {
+            launch(Dispatchers.Unconfined) {
+              lock
+                .scheduleUnlock {
+                  delay(1.nanoseconds)
+                  lock.scheduleUnlock {}.getValueOrThrow()
+                }
+                .getValueOrThrow()
             }
           }
         }
-      }
+        .getValueOrThrow()
     }
   }
 }

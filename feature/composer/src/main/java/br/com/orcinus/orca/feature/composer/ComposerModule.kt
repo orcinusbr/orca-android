@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.feature.composer
 
+import br.com.orcinus.orca.std.func.monad.Maybe
 import br.com.orcinus.orca.std.image.android.AndroidImageLoader
 import br.com.orcinus.orca.std.injector.module.Inject
 import br.com.orcinus.orca.std.injector.module.Module
@@ -22,5 +23,6 @@ import br.com.orcinus.orca.std.injector.module.injection.Injection
 import kotlinx.coroutines.Deferred
 
 abstract class ComposerModule : Module() {
-  @Inject abstract val avatarLoaderDeferred: Injection<Deferred<AndroidImageLoader<*>>>
+  @Inject
+  abstract val avatarLoaderDeferred: Injection<out Deferred<Maybe<*, AndroidImageLoader<*>>>>
 }

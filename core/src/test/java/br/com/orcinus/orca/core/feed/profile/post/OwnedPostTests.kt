@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,6 +20,7 @@ import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.ext.testing.hasPropertiesEqualToThoseOf
+import br.com.orcinus.orca.std.func.monad.Maybe
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -35,7 +36,7 @@ internal class OwnedPostTests {
         .provideOneCurrent()
     val ownedPost =
       object : OwnedPost(delegatePost) {
-        override suspend fun remove() {}
+        override suspend fun remove() = Maybe.successful()
       }
     assertThat(ownedPost).hasPropertiesEqualToThoseOf(delegatePost)
   }
@@ -52,12 +53,14 @@ internal class OwnedPostTests {
           .provideOneCurrent()
       var hasBeenDeleted = false
       object : OwnedPost(delegatePost) {
-          override suspend fun remove() {
+          override suspend fun remove(): Maybe<*, Unit> {
             hasBeenDeleted = true
+            return Maybe.successful()
           }
         }
         .remove()
-      assertThat(hasBeenDeleted).isTrue()
+        .getValueOrThrow()
+      assertThat(hasBeenDeleted, name = "hasBeenDeleted").isTrue()
     }
   }
 }

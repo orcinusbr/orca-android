@@ -23,6 +23,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.Logger
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
+import br.com.orcinus.orca.std.func.monad.flatten
 import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -48,76 +49,85 @@ constructor(
   baseURI: URI,
   clientEngineFactory: HttpClientEngineFactory<*>,
   val lock: SomeAuthenticationLock
-) : Requester(logger, baseURI, clientEngineFactory) {
+) :
+  Requester<AuthenticationLock.FailedAuthenticationException>(
+    logger,
+    baseURI,
+    clientEngineFactory
+  ) {
   override suspend fun delete(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return lock.scheduleUnlock {
-      super.delete(
-        config,
-        route,
-        build = {
-          bearerAuth(it.accessToken)
-          build()
-        }
-      )
-    }
-  }
+  ) =
+    lock
+      .scheduleUnlock {
+        super.delete(
+          config,
+          route,
+          build = {
+            bearerAuth(it.accessToken)
+            build()
+          }
+        )
+      }
+      .flatten()
 
   override suspend fun get(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return lock.scheduleUnlock {
-      super.get(
-        config,
-        route,
-        build = {
-          bearerAuth(it.accessToken)
-          build()
-        }
-      )
-    }
-  }
+  ) =
+    lock
+      .scheduleUnlock {
+        super.get(
+          config,
+          route,
+          build = {
+            bearerAuth(it.accessToken)
+            build()
+          }
+        )
+      }
+      .flatten()
 
   override suspend fun post(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return lock.scheduleUnlock {
-      super.post(
-        config,
-        route,
-        build = {
-          bearerAuth(it.accessToken)
-          build()
-        }
-      )
-    }
-  }
+  ) =
+    lock
+      .scheduleUnlock {
+        super.post(
+          config,
+          route,
+          build = {
+            bearerAuth(it.accessToken)
+            build()
+          }
+        )
+      }
+      .flatten()
 
   override suspend fun post(
     config: Configuration,
     route: URI,
     form: List<PartData>,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return lock.scheduleUnlock {
-      super.post(
-        config,
-        route,
-        form,
-        build = {
-          bearerAuth(it.accessToken)
-          build()
-        }
-      )
-    }
-  }
+  ) =
+    lock
+      .scheduleUnlock {
+        super.post(
+          config,
+          route,
+          form,
+          build = {
+            bearerAuth(it.accessToken)
+            build()
+          }
+        )
+      }
+      .flatten()
 }
 
 /**
@@ -126,7 +136,7 @@ constructor(
  * @throws Injector.ModuleNotRegisteredException If a [CoreModule] has not been registered.
  */
 @Throws(Injector.ModuleNotRegisteredException::class)
-internal fun Requester.authenticated() =
+internal fun Requester<*>.authenticated() =
   authenticated(Injector.from<CoreModule>().authenticationLock())
 
 /**
@@ -134,6 +144,8 @@ internal fun Requester.authenticated() =
  *
  * @param lock [AuthenticationLock] for unlocking requests made by an unauthenticated [Actor].
  */
-internal fun Requester.authenticated(lock: SomeAuthenticationLock): Requester =
+internal fun Requester<*>.authenticated(
+  lock: SomeAuthenticationLock
+): Requester<AuthenticationLock.FailedAuthenticationException> =
   (this as? AuthenticatedRequester)?.takeIf { it.lock == lock }
     ?: AuthenticatedRequester(logger, baseURI, clientEngineFactory, lock)

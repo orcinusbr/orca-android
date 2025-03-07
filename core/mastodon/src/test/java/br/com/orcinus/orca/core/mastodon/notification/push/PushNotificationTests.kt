@@ -32,6 +32,7 @@ import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
 import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.platform.testing.context
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
@@ -129,6 +130,7 @@ internal class PushNotificationTests {
             .suspendCall("toNotification") { pushNotification ->
               pushNotification.toNotification(context, authenticationLock)
             }
+            .isSuccessful()
             .prop(Notification::getChannelId)
             .isSameInstanceAs(type.channelID)
         }
@@ -152,6 +154,7 @@ internal class PushNotificationTests {
             .suspendCall("toNotification") { pushNotification ->
               pushNotification.toNotification(context, authenticationLock)
             }
+            .isSuccessful()
             .prop(Notification::flags)
             .prop("isAutoCancelled", Notification.FLAG_AUTO_CANCEL::and)
             .isNotZero()
@@ -176,15 +179,18 @@ internal class PushNotificationTests {
             .suspendCall("toNotification") { transformationDto ->
               transformationDto.toNotification(context, authenticationLock)
             }
+            .isSuccessful()
             .prop(Notification::extras)
             .prop("title") { notification -> notification.getString(Notification.EXTRA_TITLE) }
             .isEqualTo(
-              type.getContentTitle(
-                context,
-                authenticationLock,
-                pushNotification.account,
-                pushNotification.status
-              )
+              type
+                .getContentTitle(
+                  context,
+                  authenticationLock,
+                  pushNotification.account,
+                  pushNotification.status
+                )
+                .getValueOrThrow()
             )
         }
       }
@@ -207,6 +213,7 @@ internal class PushNotificationTests {
             .suspendCall("toNotification") { pushNotification ->
               pushNotification.toNotification(context, authenticationLock)
             }
+            .isSuccessful()
             .all {
               prop(Notification::extras)
                 .prop("showWhen") { it.getBoolean(Notification.EXTRA_SHOW_WHEN) }

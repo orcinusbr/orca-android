@@ -18,7 +18,10 @@ package br.com.orcinus.orca.core.mastodon.instance.requester.authentication
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
+import assertk.coroutines.assertions.suspendCall
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import kotlin.test.Test
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -32,11 +35,14 @@ internal class AuthenticatedRequesterTestScopeTests {
   }
 
   @Test
-  fun requestsAreRespondedTo() {
+  fun requestsAreRespondedTo() =
     runAuthenticatedRequesterTest({ respondOk("😶") }) {
-      assertThat(requester.get(route).bodyAsText()).isEqualTo("😶")
+      assertThat(requester)
+        .suspendCall("get") { it.get(route) }
+        .isSuccessful()
+        .suspendCall("bodyAsText", HttpResponse::bodyAsText)
+        .isEqualTo("😶")
     }
-  }
 
   @Test
   fun runsBodyInSpecifiedContext() {
