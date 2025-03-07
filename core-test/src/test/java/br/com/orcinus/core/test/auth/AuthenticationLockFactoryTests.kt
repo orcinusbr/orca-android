@@ -39,7 +39,7 @@ internal class AuthenticationLockFactoryTests {
     val actorProvider = FixedActorProvider(Actor.Unauthenticated)
     val authenticationLock = AuthenticationLock(authorizer, actorProvider)
     runTest {
-      assertFailure { authenticationLock.scheduleUnlock {} }
+      assertFailure { authenticationLock.scheduleUnlock {}.getValueOrThrow() }
         .isNotNull()
         .isInstanceOf<AuthenticationLock.FailedAuthenticationException>()
         .prop(AuthenticationLock.FailedAuthenticationException::cause)
@@ -52,8 +52,8 @@ internal class AuthenticationLockFactoryTests {
     val authorizer = AuthorizerBuilder().build()
     val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
     val actorProvider = InMemoryActorProvider().apply { remember(actor) }
-    AuthenticationLock(authorizer, actorProvider).scheduleUnlock {
-      assertThat(it).isSameInstanceAs(actor)
-    }
+    AuthenticationLock(authorizer, actorProvider)
+      .scheduleUnlock { assertThat(it).isSameInstanceAs(actor) }
+      .getValueOrThrow()
   }
 }

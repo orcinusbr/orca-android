@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.cache
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
@@ -24,6 +25,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.platform.cache.Fetcher
+import br.com.orcinus.orca.std.func.monad.flatMap
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import io.ktor.client.call.body
@@ -44,15 +46,19 @@ import java.net.URI
  */
 internal class MastodonProfileFetcher(
   private val context: Context,
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<Profile>() {
-  override suspend fun onFetch(key: String): Profile {
-    return requester
+  @Throws(AuthenticationLock.FailedAuthenticationException::class)
+  override suspend fun onFetch(key: String) =
+    requester
       .authenticated()
       .get({ path("api").path("v1").path("accounts").path(key).build() })
-      .body<MastodonAccount>()
-      .toProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
-  }
+      .flatMap {
+        it
+          .body<MastodonAccount>()
+          .toProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
+      }
+      .getValueOrThrow()
 }

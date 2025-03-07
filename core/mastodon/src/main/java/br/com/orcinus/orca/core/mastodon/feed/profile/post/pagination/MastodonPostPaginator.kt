@@ -194,7 +194,10 @@ internal abstract class MastodonPostPaginator<T : Any>(
             } as (HostedURLBuilder.() -> URI)?
             ?: initialRouter
 
-        Pagination(page, coroutineScope.async { authenticatedRequester.get(router) })
+        Pagination(
+          page,
+          coroutineScope.async { authenticatedRequester.get(router).getValueOrThrow() }
+        )
       }
       .filterNotNull()
       .onEach(::onWillPaginate)
@@ -202,7 +205,7 @@ internal abstract class MastodonPostPaginator<T : Any>(
       .shareIn(coroutineScope + Job(), SharingStarted.Eagerly)
 
   /** [Requester] by which requests will be performed. */
-  protected abstract val requester: Requester
+  protected abstract val requester: Requester<*>
 
   /** Page from which the next pagination will start. */
   @VisibleForTesting

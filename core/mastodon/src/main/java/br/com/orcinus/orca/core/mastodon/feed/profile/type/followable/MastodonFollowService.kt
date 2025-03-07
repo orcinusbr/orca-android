@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -28,7 +28,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
  * @property requester [Requester] by which the HTTP requests are sent.
  */
 class MastodonFollowService(
-  private val requester: Requester,
+  private val requester: Requester<*>,
   override val profileProvider: MastodonProfileProvider
 ) : FollowService() {
   override suspend fun <T : Follow> setFollow(profile: FollowableProfile<T>, follow: T) {

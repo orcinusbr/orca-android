@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -32,6 +32,7 @@ import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.core.mastodon.notification.push.PushNotification.Type
 import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.decodeFromZ85
 import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPushClient
+import br.com.orcinus.orca.std.func.monad.Maybe
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
 import java.security.spec.X509EncodedKeySpec
@@ -77,10 +78,12 @@ internal data class PushNotification(
         account: MastodonAccount?,
         status: MastodonStatus?
       ) =
-        context.getString(
-          R.string.someone_has_favorited_your_post,
-          account?.acct,
-          status?.summarizedContent
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(
+            R.string.someone_has_favorited_your_post,
+            account?.acct,
+            status?.summarizedContent
+          )
         )
     },
 
@@ -95,7 +98,10 @@ internal data class PushNotification(
         authenticationLock: SomeAuthenticationLock,
         account: MastodonAccount?,
         status: MastodonStatus?
-      ) = context.getString(R.string.someone_has_followed_you, account?.acct)
+      ) =
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(R.string.someone_has_followed_you, account?.acct)
+        )
     },
 
     /** Someone has requested to follow the user. */
@@ -110,7 +116,10 @@ internal data class PushNotification(
         authenticationLock: SomeAuthenticationLock,
         account: MastodonAccount?,
         status: MastodonStatus?
-      ) = context.getString(R.string.someone_has_requested_to_follow_you, account?.acct)
+      ) =
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(R.string.someone_has_requested_to_follow_you, account?.acct)
+        )
     },
 
     /** Someone has mentioned the user. */
@@ -125,10 +134,12 @@ internal data class PushNotification(
         account: MastodonAccount?,
         status: MastodonStatus?
       ) =
-        context.getString(
-          R.string.someone_has_mentioned_you,
-          account?.acct,
-          status?.summarizedContent
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(
+            R.string.someone_has_mentioned_you,
+            account?.acct,
+            status?.summarizedContent
+          )
         )
     },
 
@@ -144,14 +155,16 @@ internal data class PushNotification(
         account: MastodonAccount?,
         status: MastodonStatus?
       ) =
-        if (account != null && account.isOwned(authenticationLock)) {
-          context.getString(R.string.poll_created_by_you_has_ended, status?.summarizedContent)
-        } else {
-          context.getString(
-            R.string.poll_created_by_someone_has_ended,
-            account?.acct,
-            status?.summarizedContent
-          )
+        (account?.isOwned(authenticationLock) ?: Maybe.successful(false)).map { isOwned ->
+          if (isOwned) {
+            context.getString(R.string.poll_created_by_you_has_ended, status?.summarizedContent)
+          } else {
+            context.getString(
+              R.string.poll_created_by_someone_has_ended,
+              account?.acct,
+              status?.summarizedContent
+            )
+          }
         }
     },
 
@@ -168,10 +181,12 @@ internal data class PushNotification(
         account: MastodonAccount?,
         status: MastodonStatus?
       ) =
-        context.getString(
-          R.string.someone_has_reposted_your_post,
-          account?.acct,
-          status?.summarizedContent
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(
+            R.string.someone_has_reposted_your_post,
+            account?.acct,
+            status?.summarizedContent
+          )
         )
     },
 
@@ -187,7 +202,10 @@ internal data class PushNotification(
         authenticationLock: SomeAuthenticationLock,
         account: MastodonAccount?,
         status: MastodonStatus?
-      ) = context.getString(R.string.relationship_has_been_severed)
+      ) =
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(R.string.relationship_has_been_severed)
+        )
     },
 
     /** Someone whose [MastodonStatus]es the user chose to be notified about has published. */
@@ -203,7 +221,13 @@ internal data class PushNotification(
         account: MastodonAccount?,
         status: MastodonStatus?
       ) =
-        context.getString(R.string.someone_has_published, account?.acct, status?.summarizedContent)
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(
+            R.string.someone_has_published,
+            account?.acct,
+            status?.summarizedContent
+          )
+        )
     },
 
     /** A [MastodonStatus] with which the user has interacted has been edited. */
@@ -217,7 +241,10 @@ internal data class PushNotification(
         authenticationLock: SomeAuthenticationLock,
         account: MastodonAccount?,
         status: MastodonStatus?
-      ) = context.getString(R.string.someone_has_edited, account?.acct, status?.summarizedContent)
+      ) =
+        Maybe.successful<AuthenticationLock.FailedAuthenticationException, _>(
+          context.getString(R.string.someone_has_edited, account?.acct, status?.summarizedContent)
+        )
     };
 
     /**
@@ -304,7 +331,7 @@ internal data class PushNotification(
       authenticationLock: SomeAuthenticationLock,
       account: MastodonAccount?,
       status: MastodonStatus?
-    ): String
+    ): Maybe<AuthenticationLock.FailedAuthenticationException, String>
   }
 
   /**
@@ -332,12 +359,14 @@ internal data class PushNotification(
    * @see MastodonAccount.isOwned
    */
   suspend fun toNotification(context: Context, authenticationLock: SomeAuthenticationLock) =
-    Notification.Builder(context, type.channelID)
-      .setAutoCancel(true)
-      .setContentTitle(type.getContentTitle(context, authenticationLock, account, status))
-      .setShowWhen(true)
-      .setWhen(Instant.parse(createdAt).toEpochMilli())
-      .build()
+    type.getContentTitle(context, authenticationLock, account, status).map {
+      Notification.Builder(context, type.channelID)
+        .setAutoCancel(true)
+        .setContentTitle(it)
+        .setShowWhen(true)
+        .setWhen(Instant.parse(createdAt).toEpochMilli())
+        .build()
+    }
 
   companion object {
     /**

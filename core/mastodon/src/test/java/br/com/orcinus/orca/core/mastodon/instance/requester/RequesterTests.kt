@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,9 +16,13 @@
 package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.coroutines.assertions.suspendCall
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
-import io.ktor.client.call.body
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import kotlin.test.Test
 
 internal class RequesterTests {
@@ -31,18 +35,25 @@ internal class RequesterTests {
   }
 
   @Test
-  fun deletes() {
-    runRequesterTest { assertThat(requester.delete(route).body<String>()).isEqualTo("") }
+  fun deletes() = runRequesterTest {
+    assertThat(requester)
+      .transform("delete") { it.delete(route) }
+      .isSuccessful()
+      .suspendCall("bodyAsText", HttpResponse::bodyAsText)
+      .isEmpty()
   }
 
   @Test
-  fun retriesDeleteTwiceAfterFailure() {
+  fun retriesDeleteTwiceAfterFailure() =
     assertThat(retryCountOf { requester.delete(route) }).isEqualTo(2)
-  }
 
   @Test
-  fun gets() {
-    runRequesterTest { assertThat(requester.get(route).body<String>()).isEqualTo("") }
+  fun gets() = runRequesterTest {
+    assertThat(requester)
+      .transform("get") { it.get(route) }
+      .isSuccessful()
+      .suspendCall("bodyAsText", HttpResponse::bodyAsText)
+      .isEmpty()
   }
 
   @Test

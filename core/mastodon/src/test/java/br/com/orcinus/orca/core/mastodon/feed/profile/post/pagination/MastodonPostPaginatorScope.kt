@@ -88,7 +88,7 @@ private data class RoutesImpl(
  *   upon pagination.
  */
 private class MastodonPostPaginatorScopeImpl(
-  requesterScope: RequesterTestScope<Requester>,
+  requesterScope: RequesterTestScope<Requester<AuthenticationLock.FailedAuthenticationException>>,
   authenticationLock: SomeAuthenticationLock
 ) : MastodonPostPaginatorScope(requesterScope, authenticationLock)
 
@@ -142,7 +142,8 @@ internal sealed class Routes {
  * @see runMastodonPostPaginatorTest
  */
 internal sealed class MastodonPostPaginatorScope(
-  private val requesterScope: RequesterTestScope<Requester>,
+  private val requesterScope:
+    RequesterTestScope<Requester<AuthenticationLock.FailedAuthenticationException>>,
   authenticationLock: SomeAuthenticationLock
 ) :
   MastodonPostPaginator<Any>(authenticationLock, requesterScope),

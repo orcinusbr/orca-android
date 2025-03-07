@@ -96,6 +96,7 @@ dependencies {
   testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:intents-test"))
   testImplementation(project(":platform:testing"))
+  testImplementation(project(":std:func-test"))
   testImplementation(project(":std:injector-test"))
   testImplementation(libs.assertk.coroutines)
   testImplementation(libs.kotlin.coroutines.test)

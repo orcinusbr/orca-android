@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.std.func.monad
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
@@ -46,6 +47,32 @@ internal class MaybeTests {
   @Test
   fun isFailedIsFalseWhenMaybeIsSuccessful() =
     assertThat(Maybe).successful<Exception, _>(0).prop(Maybe<Exception, Int>::isFailed).isFalse()
+
+  @Test
+  fun onSuccessfulReturnsMaybeWhenItIsSuccessful() =
+    assertThat(Maybe).successful<Exception, _>(0).all {
+      given { transform("onSuccessful") { maybe -> maybe.onSuccessful {} }.isEqualTo(it) }
+    }
+
+  @Test
+  fun onSuccessfulReturnsMaybeWhenItIsFailed() =
+    assertThat(Maybe).failed<_, Any>(exception).all {
+      given { transform("onSuccessful") { maybe -> maybe.onSuccessful {} }.isEqualTo(it) }
+    }
+
+  @Test
+  fun doesNotCallSuccessfulCallbackWhenMaybeIsFailed() {
+    var didCallCallback = false
+    Maybe.failed<_, Any>(exception).onSuccessful { didCallCallback = true }
+    assertThat(didCallCallback, name = "didCallCallback").isFalse()
+  }
+
+  @Test
+  fun callsSuccessfulCallbackWhenMaybeIsSuccessful() {
+    var didCallCallback = false
+    Maybe.successful<Exception, _>(0).onSuccessful { didCallCallback = true }
+    assertThat(didCallCallback, name = "didCallCallback").isTrue()
+  }
 
   @Test
   fun failsWhenJoiningEachElementOfAFailedIterableIntoASingleMaybe() =

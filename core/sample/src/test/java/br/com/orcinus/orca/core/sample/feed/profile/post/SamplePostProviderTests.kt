@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -66,7 +66,9 @@ internal class SamplePostProviderTests {
           .build()
           .postProvider
       val deletedPost =
-        postProvider.provideOneCurrent().own().apply { (this as OwnedPost).remove() }
+        postProvider.provideOneCurrent().own().apply {
+          (this as OwnedPost).remove().getValueOrThrow()
+        }
       val posts = postProvider.provideAllCurrent()
       assertThat(posts).doesNotContain(deletedPost)
     }

@@ -38,7 +38,7 @@ import org.robolectric.android.controller.ServiceController
  * Default implementation of a [PushNotificationServiceTestScope] which will be used in the tests.
  */
 private class PushNotificationServiceEnvironment(
-  override val requester: Requester,
+  override val requester: Requester<*>,
   override val clientResponseProvider: NotificationsClientResponseProvider,
   override val context: Context,
   delegate: TestScope
@@ -57,7 +57,7 @@ internal sealed class PushNotificationServiceTestScope : CoroutineScope {
   protected abstract val context: Context
 
   /** [Requester] by which subscriptions are pushed. */
-  abstract val requester: Requester
+  abstract val requester: Requester<*>
 
   /** [NotificationsClientResponseProvider] by which responses to requests are provided. */
   abstract val clientResponseProvider: NotificationsClientResponseProvider

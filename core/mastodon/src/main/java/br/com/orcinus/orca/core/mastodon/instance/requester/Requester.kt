@@ -21,6 +21,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.ResumableRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.resumable
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.func.monad.Maybe
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
@@ -55,6 +56,7 @@ import kotlinx.serialization.json.JsonNamingStrategy
  * As for those that require an authenticated [Actor], [authenticated] can be called in order to
  * create one by which authentication will be required when performing any request.
  *
+ * @param E [Exception] that is the possible reason of a failure of a request _before_ it is sent.
  * @property logger [Logger] by which received [HttpResponse]s will be logged.
  * @property clientEngineFactory [HttpClientEngineFactory] that creates the [HttpClientEngine]
  *   powering the underlying [client].
@@ -63,7 +65,7 @@ import kotlinx.serialization.json.JsonNamingStrategy
  * @see get
  * @see post
  */
-open class Requester
+open class Requester<E : Exception>
 internal constructor(
   @get:InternalRequesterApi internal val logger: Logger,
   @get:InternalRequesterApi internal val baseURI: URI,
@@ -225,9 +227,7 @@ internal constructor(
   internal suspend fun delete(
     route: HostedURLBuilder.() -> URI,
     config: Configuration.Builder.() -> Unit = Configuration.noOpBuild
-  ): HttpResponse {
-    return delete(Configuration.build(config), absolute(route), noOpRequestBuild)
-  }
+  ) = delete(Configuration.build(config), absolute(route), noOpRequestBuild)
 
   /**
    * Sends an HTTP `GET` request.
@@ -238,9 +238,7 @@ internal constructor(
   internal suspend fun get(
     route: HostedURLBuilder.() -> URI,
     config: Configuration.Builder.() -> Unit = Configuration.noOpBuild
-  ): HttpResponse {
-    return get(Configuration.build(config), absolute(route), noOpRequestBuild)
-  }
+  ) = get(Configuration.build(config), absolute(route), noOpRequestBuild)
 
   /**
    * Sends an HTTP `POST` request.
@@ -251,9 +249,7 @@ internal constructor(
   internal suspend fun post(
     route: HostedURLBuilder.() -> URI,
     config: Configuration.UrlEncoded.Builder.() -> Unit = Configuration.noOpBuild
-  ): HttpResponse {
-    return post(Configuration.UrlEncoded.build(config), absolute(route), noOpRequestBuild)
-  }
+  ) = post(Configuration.UrlEncoded.build(config), absolute(route), noOpRequestBuild)
 
   /**
    * Sends an HTTP `POST` request.
@@ -266,9 +262,7 @@ internal constructor(
     route: HostedURLBuilder.() -> URI,
     form: List<PartData>,
     config: Configuration.Builder.() -> Unit = Configuration.noOpBuild
-  ): HttpResponse {
-    return post(Configuration.build(config), absolute(route), form, noOpRequestBuild)
-  }
+  ) = post(Configuration.build(config), absolute(route), form, noOpRequestBuild)
 
   /**
    * Sends an HTTP `DELETE` request.
@@ -283,12 +277,13 @@ internal constructor(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return client.delete("$route") {
-      config.applyTo(this)
-      build(this)
-    }
-  }
+  ) =
+    Maybe.successful<E, _>(
+      client.delete("$route") {
+        config.applyTo(this)
+        build(this)
+      }
+    )
 
   /**
    * Sends an HTTP `GET` request.
@@ -303,12 +298,13 @@ internal constructor(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return client.get("$route") {
-      config.applyTo(this)
-      build(this)
-    }
-  }
+  ) =
+    Maybe.successful<E, _>(
+      client.get("$route") {
+        config.applyTo(this)
+        build(this)
+      }
+    )
 
   /**
    * Sends an HTTP `POST` request.
@@ -323,12 +319,13 @@ internal constructor(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return client.post("$route") {
-      config.applyTo(this)
-      build(this)
-    }
-  }
+  ) =
+    Maybe.successful<E, _>(
+      client.post("$route") {
+        config.applyTo(this)
+        build(this)
+      }
+    )
 
   /**
    * Sends an HTTP `POST` request.
@@ -345,19 +342,20 @@ internal constructor(
     route: URI,
     form: List<PartData>,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return if (form.isEmpty()) {
-      client.post("$route") {
-        config.applyTo(this)
-        build(this)
+  ) =
+    Maybe.successful<E, _>(
+      if (form.isEmpty()) {
+        client.post("$route") {
+          config.applyTo(this)
+          build(this)
+        }
+      } else {
+        client.submitFormWithBinaryData("$route", form) {
+          config.applyTo(this)
+          build(this)
+        }
       }
-    } else {
-      client.submitFormWithBinaryData("$route", form) {
-        config.applyTo(this)
-        build(this)
-      }
-    }
-  }
+    )
 
   /**
    * Returns an absolute [URI] based on the given routing.
@@ -404,8 +402,7 @@ internal constructor(
      * @param baseURI [URI] from which routes are constructed.
      */
     @JvmStatic
-    fun create(baseURI: URI): Requester {
-      return Requester(Logger.Android, baseURI, clientEngineFactory = CIO)
-    }
+    fun create(baseURI: URI) =
+      Requester<Exception>(Logger.Android, baseURI, clientEngineFactory = CIO)
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -40,19 +40,12 @@ internal data class MastodonAuthenticationToken(private val accessToken: String)
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   avatar will be loaded from a [URI].
    */
-  suspend fun toActor(
-    requester: Requester,
-    avatarLoaderProvider: SomeImageLoaderProvider<URI>
-  ): Actor.Authenticated {
-    return toActor(
-      avatarLoaderProvider,
-      requester
-        .get({ path("api").path("v1").path("accounts").path("verify_credentials").build() }) {
-          headers { append(HttpHeaders.Authorization, "Bearer $accessToken") }
-        }
-        .body<MastodonAuthenticationVerification>()
-    )
-  }
+  suspend fun toActor(requester: Requester<*>, avatarLoaderProvider: SomeImageLoaderProvider<URI>) =
+    requester
+      .get({ path("api").path("v1").path("accounts").path("verify_credentials").build() }) {
+        headers { append(HttpHeaders.Authorization, "Bearer $accessToken") }
+      }
+      .map { toActor(avatarLoaderProvider, it.body<MastodonAuthenticationVerification>()) }
 
   /**
    * Converts this [MastodonAuthenticationToken] into an [authenticated][Actor.Authenticated]

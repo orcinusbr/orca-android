@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -36,7 +36,7 @@ import java.net.URI
  */
 internal class MastodonProfilePostPaginator(
   override val context: Context,
-  override val requester: Requester,
+  override val requester: Requester<*>,
   override val actorProvider: ActorProvider,
   override val commentPaginatorProvider: MastodonCommentPaginator.Provider,
   override val imageLoaderProvider: SomeImageLoaderProvider<URI>,

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -26,6 +26,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.Mastodon
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
+import br.com.orcinus.orca.std.func.monad.flatMap
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import io.ktor.client.call.body
@@ -45,7 +46,7 @@ import kotlinx.coroutines.launch
 internal class MastodonAuthenticationViewModel
 private constructor(
   application: Application,
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val authorizationCode: String
 ) : AndroidViewModel(application) {
@@ -71,9 +72,8 @@ private constructor(
             append("scope", Mastodon.SCOPES)
           }
         }
-        .body<MastodonAuthenticationToken>()
-        .toActor(requester, avatarLoaderProvider)
-        .run(onAuthentication)
+        .flatMap { it.body<MastodonAuthenticationToken>().toActor(requester, avatarLoaderProvider) }
+        .onSuccessful(onAuthentication)
     }
   }
 
@@ -90,7 +90,7 @@ private constructor(
      */
     fun createFactory(
       application: Application,
-      requester: Requester,
+      requester: Requester<*>,
       avatarLoaderProvider: SomeImageLoaderProvider<URI>,
       authorizationCode: String
     ): ViewModelProvider.Factory {

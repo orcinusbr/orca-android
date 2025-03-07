@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -29,6 +29,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.stat.toggleable.SampleT
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.ext.uri.URIBuilder
+import br.com.orcinus.orca.std.func.monad.Maybe
 import br.com.orcinus.orca.std.markdown.Markdown
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -89,8 +90,9 @@ internal class HardcodedComposer : Composer {
       override suspend fun toOwnedPost(): OwnedPost {
         return let {
           object : OwnedPost(it) {
-            override suspend fun remove() {
+            override suspend fun remove(): Maybe<*, Unit> {
               postsFlow.value -= it
+              return Maybe.successful()
             }
           }
         }

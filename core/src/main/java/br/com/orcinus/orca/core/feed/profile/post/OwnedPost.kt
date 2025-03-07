@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.feed.profile.post
 
 import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.std.func.monad.Maybe
 
 /**
  * [Post] that belongs to the authenticated [Actor].
@@ -39,7 +40,7 @@ abstract class OwnedPost @InternalCoreApi constructor(private val delegate: Post
   }
 
   /** Removes this [OwnedPost]. */
-  abstract suspend fun remove()
+  abstract suspend fun remove(): Maybe<*, Unit>
 
   companion object
 }

@@ -21,6 +21,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientRespon
 import br.com.orcinus.orca.core.mastodon.instance.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.instance.requester.RequesterTestScope
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
+import br.com.orcinus.orca.std.func.monad.Maybe
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.statement.HttpResponse
@@ -79,11 +80,11 @@ internal inline fun resumptionCountOf(
 @InternalRequesterApi
 @OptIn(ExperimentalContracts::class)
 internal inline fun responseCountOf(
-  crossinline request: suspend RequesterTestScope<ResumableRequester>.() -> HttpResponse
+  crossinline request: suspend RequesterTestScope<ResumableRequester>.() -> Maybe<*, HttpResponse>
 ): Int {
   contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
   val clientResponseProvider = CountingClientResponseProvider(ClientResponseProvider.ok)
-  runResumableRequesterTest(clientResponseProvider) { request() }
+  runResumableRequesterTest(clientResponseProvider) { request().getValueOrThrow() }
   return clientResponseProvider.count
 }
 

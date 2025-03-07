@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -58,7 +58,7 @@ import java.time.ZonedDateTime
  */
 internal class MastodonPost(
   context: Context,
-  internal val requester: Requester,
+  internal val requester: Requester<*>,
   override val actorProvider: ActorProvider,
   profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>,

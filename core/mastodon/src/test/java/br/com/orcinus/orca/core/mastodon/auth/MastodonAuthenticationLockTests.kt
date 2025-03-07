@@ -47,6 +47,7 @@ internal class MastodonAuthenticationLockTests {
           actorProvider
         )
         .scheduleUnlock {}
+        .getValueOrThrow()
     }
     assertThat(hasUnlocked, name = "hasUnlocked").isTrue()
     notificationLock.close()
@@ -64,7 +65,7 @@ internal class MastodonAuthenticationLockTests {
           authenticator,
           actorProvider
         )
-        .apply { repeat(2) { scheduleUnlock {} } }
+        .apply { repeat(2) { scheduleUnlock {}.getValueOrThrow() } }
     }
     assertThat(unlockCount, name = "unlockCount").isEqualTo(1)
     notificationLock.close()

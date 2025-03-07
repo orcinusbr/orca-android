@@ -27,7 +27,7 @@ import kotlinx.coroutines.test.currentTime
  *
  * @param coroutineScope [TestScope] by which the elapsed time is provided.
  */
-internal fun Requester.resumable(coroutineScope: TestScope) =
+internal fun Requester<*>.resumable(coroutineScope: TestScope) =
   resumable(
     { @OptIn(ExperimentalCoroutinesApi::class) coroutineScope.currentTime.milliseconds },
     InMemoryRequestDao()

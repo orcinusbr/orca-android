@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -21,8 +21,10 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.prop
+import assertk.coroutines.assertions.suspendCall
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
-import io.ktor.client.call.body
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
@@ -74,26 +76,25 @@ internal class PushPushNotificationServiceTestScopeTests {
   }
 
   @Test
-  fun respondsToRequestForObtainingNotifications() {
-    runPushNotificationServiceTest {
-      assertThat(requester)
-        .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
-        .transform("bodyAsText") { it.bodyAsText() }
-        .transform("Json.decodeFromString") {
-          Json.decodeFromString(PushNotificationService.dtosSerializer, it)
-        }
-    }
+  fun respondsToRequestForObtainingNotifications() = runPushNotificationServiceTest {
+    assertThat(requester)
+      .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
+      .isSuccessful()
+      .suspendCall("bodyAsText", HttpResponse::bodyAsText)
+      .transform("Json.decodeFromString") {
+        Json.decodeFromString(PushNotificationService.dtosSerializer, it)
+      }
   }
 
   @Test
-  fun responseIsProvidedBySpecifiedProviderWhenRequestIsNotForObtainingNotifications() {
+  fun responseIsProvidedBySpecifiedProviderWhenRequestIsNotForObtainingNotifications() =
     runPushNotificationServiceTest {
       assertThat(requester)
         .transform("get") { it.get(HostedURLBuilder::buildNotificationSubscriptionPushingRoute) }
-        .transform("body") { it.body<String>() }
+        .isSuccessful()
+        .suspendCall("bodyAsText", HttpResponse::bodyAsText)
         .isEmpty()
     }
-  }
 
   @Test
   fun destroysService() {

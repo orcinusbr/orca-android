@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -57,7 +57,7 @@ import kotlinx.serialization.builtins.ListSerializer
 @InternalNotificationApi
 internal class PushNotificationService
 @VisibleForTesting
-constructor(private val requester: Requester, private val webPushClient: WebPushClient) :
+constructor(private val requester: Requester<*>, private val webPushClient: WebPushClient) :
   Service() {
   /** [Binder] for interprocess communication (IPC). */
   private var binder: Binder? = null

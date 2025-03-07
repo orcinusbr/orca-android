@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -85,7 +85,7 @@ internal constructor(
    */
   @Throws(IllegalStateException::class)
   internal suspend fun toProfile(
-    requester: Requester,
+    requester: Requester<*>,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
@@ -112,7 +112,7 @@ internal constructor(
    *   [MastodonEditableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonEditableProfile(
-    requester: Requester,
+    requester: Requester<*>,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider

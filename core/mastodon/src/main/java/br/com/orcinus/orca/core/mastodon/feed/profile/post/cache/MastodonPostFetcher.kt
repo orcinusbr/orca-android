@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -52,24 +52,27 @@ import java.net.URI
  */
 internal class MastodonPostFetcher(
   private val context: Context,
-  private val requester: Requester,
+  private val requester: Requester<*>,
   private val actorProvider: ActorProvider,
   private val profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : Fetcher<Post>() {
-  override suspend fun onFetch(key: String): Post {
-    return requester
+  override suspend fun onFetch(key: String) =
+    requester
       .authenticated()
       .get({ path("api").path("v1").path("statuses").path(key).build() })
-      .body<MastodonStatus>()
-      .toPost(
-        context,
-        requester,
-        actorProvider,
-        profilePostPaginatorProvider,
-        commentPaginatorProvider,
-        imageLoaderProvider
-      )
-  }
+      .map {
+        it
+          .body<MastodonStatus>()
+          .toPost(
+            context,
+            requester,
+            actorProvider,
+            profilePostPaginatorProvider,
+            commentPaginatorProvider,
+            imageLoaderProvider
+          )
+      }
+      .getValueOrThrow()
 }

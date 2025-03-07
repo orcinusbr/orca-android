@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -106,7 +106,7 @@ internal data class MastodonPostEntity(
    */
   suspend fun toPost(
     context: Context,
-    requester: Requester,
+    requester: Requester<*>,
     profileCache: Cache<Profile>,
     dao: MastodonPostEntityDao,
     actorProvider: ActorProvider,

@@ -26,6 +26,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.R
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.headers.form.PartDataKSerializer
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.headers.strings.serializer
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.func.monad.Maybe
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
 import io.ktor.client.engine.HttpClientEngine
@@ -74,7 +75,7 @@ constructor(
   logger: Logger,
   baseURI: URI,
   clientEngineFactory: HttpClientEngineFactory<*>
-) : Requester(logger, baseURI, clientEngineFactory) {
+) : Requester<Exception>(logger, baseURI, clientEngineFactory) {
   /** Responses that are currently ongoing. */
   private val progress = hashMapOf<Request, Deferred<HttpResponse>>()
 
@@ -113,42 +114,38 @@ constructor(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return prepareForResumption(Request.MethodName.DELETE, config, formData(), route) {
+  ) =
+    prepareForResumption(Request.MethodName.DELETE, config, formData(), route) {
       super.delete(config, route, build)
     }
-  }
 
   override suspend fun get(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return prepareForResumption(Request.MethodName.GET, config, formData(), route) {
+  ) =
+    prepareForResumption(Request.MethodName.GET, config, formData(), route) {
       super.get(config, route, build)
     }
-  }
 
   override suspend fun post(
     config: Configuration,
     route: URI,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return prepareForResumption(Request.MethodName.POST, config, formData(), route) {
+  ) =
+    prepareForResumption(Request.MethodName.POST, config, formData(), route) {
       super.post(config, route, build)
     }
-  }
 
   override suspend fun post(
     config: Configuration,
     route: URI,
     form: List<PartData>,
     build: HttpRequestBuilder.() -> Unit
-  ): HttpResponse {
-    return prepareForResumption(Request.MethodName.POST, config, formData(), route) {
+  ) =
+    prepareForResumption(Request.MethodName.POST, config, formData(), route) {
       super.post(config, route, form, build)
     }
-  }
 
   /**
    * Restarts requests that have been attempted to be performed previously and were cancelled when
@@ -157,8 +154,8 @@ constructor(
    *
    * @see interrupt
    */
-  suspend fun resume() {
-    requestDao.selectAll().forEach { request ->
+  suspend fun resume() = runCatching {
+    for (request in requestDao.selectAll()) {
       val route = { _: HostedURLBuilder -> URI(request.route) }
       val config: Configuration.Builder.() -> Unit = {
         headers {
@@ -166,26 +163,28 @@ constructor(
           appendAll(headers)
         }
       }
-      request.fold(
-        onDelete = { delete(route, config) },
-        onGet = { get(route, config) },
-        onPost = {
-          val form = Json.decodeFromString(ListSerializer(PartDataKSerializer), request.form)
-          val isFormEmpty = form.isEmpty()
-          if (isFormEmpty) {
-            post(route) {
-              config()
-              parameters {
-                val parameters =
-                  Json.decodeFromString(StringValues.serializer(), request.parameters)
-                appendAll(parameters)
+      request
+        .fold(
+          onDelete = { delete(route, config) },
+          onGet = { get(route, config) },
+          onPost = {
+            val form = Json.decodeFromString(ListSerializer(PartDataKSerializer), request.form)
+            val isFormEmpty = form.isEmpty()
+            if (isFormEmpty) {
+              post(route) {
+                config()
+                parameters {
+                  val parameters =
+                    Json.decodeFromString(StringValues.serializer(), request.parameters)
+                  appendAll(parameters)
+                }
               }
+            } else {
+              post(route, form, config)
             }
-          } else {
-            post(route, form, config)
           }
-        }
-      )
+        )
+        .getValueOrThrow()
     }
   }
 
@@ -218,8 +217,8 @@ constructor(
     config: Configuration,
     form: List<PartData>,
     route: URI,
-    crossinline request: suspend () -> HttpResponse
-  ): HttpResponse {
+    crossinline request: suspend () -> Maybe<Exception, HttpResponse>
+  ): Maybe<Exception, HttpResponse> {
     contract { callsInPlace(request, InvocationKind.AT_MOST_ONCE) }
     return coroutineScope {
       val entity =
@@ -233,7 +232,7 @@ constructor(
       val response = progress.computeIfAbsent(entity) { async { respond(entity, request) } }.await()
       progress -= entity
       requestDao.delete(entity)
-      response
+      Maybe.successful(response)
     }
   }
 
@@ -284,12 +283,12 @@ constructor(
   @OptIn(ExperimentalContracts::class)
   private suspend inline fun respond(
     entity: Request,
-    crossinline request: suspend () -> HttpResponse
+    crossinline request: suspend () -> Maybe<Exception, HttpResponse>
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.AT_MOST_ONCE) }
     val reusedResponse = reuse[entity]
     return if (reusedResponse == null || isResponseStale(entity)) {
-      val fetchedResponse = request()
+      val fetchedResponse = request().getValueOrThrow()
       reuse[entity] = fetchedResponse
       fetchedResponse
     } else {
@@ -318,7 +317,7 @@ constructor(
  * @throws Module.DependencyNotInjectedException If a [Context] has not been globally injected.
  */
 @Throws(Module.DependencyNotInjectedException::class)
-internal fun Requester.resumable(): ResumableRequester {
+internal fun Requester<*>.resumable(): ResumableRequester {
   val context = Injector.get<Context>()
   val requestDao = MastodonDatabase.getInstance(context).requestDao
   return resumable(ResumableRequester.ElapsedTimeProvider.system, requestDao)
@@ -331,7 +330,7 @@ internal fun Requester.resumable(): ResumableRequester {
  *   will be timestamped.
  * @property requestDao [RequestDao] for performing read and write operations on [Request]s.
  */
-internal fun Requester.resumable(
+internal fun Requester<*>.resumable(
   elapsedTimeProvider: ResumableRequester.ElapsedTimeProvider,
   requestDao: RequestDao
 ) =

@@ -43,7 +43,7 @@ internal class ResumableRequesterTests {
       val resumableRequester = requester.resumable(firstElapsedTimeProvider, requestDao)
       val anotherElapsedTimeProvider = ResumableRequester.ElapsedTimeProvider(Duration::ZERO)
       assertThat(this)
-        .prop(RequesterTestScope<Requester>::requester)
+        .prop(RequesterTestScope<Requester<*>>::requester)
         .transform("resumable") { it.resumable(anotherElapsedTimeProvider, requestDao) }
         .isNotSameInstanceAs(resumableRequester)
     }
@@ -56,7 +56,7 @@ internal class ResumableRequesterTests {
       val resumableRequester = requester.resumable(elapsedTimeProvider, firstRequestDao)
       val anotherRequestDao = InMemoryRequestDao()
       assertThat(this)
-        .prop(RequesterTestScope<Requester>::requester)
+        .prop(RequesterTestScope<Requester<*>>::requester)
         .transform("resumable") { it.resumable(elapsedTimeProvider, anotherRequestDao) }
         .isNotSameInstanceAs(resumableRequester)
     }
@@ -67,7 +67,7 @@ internal class ResumableRequesterTests {
       val elapsedTimeProvider = ResumableRequester.ElapsedTimeProvider(Duration::ZERO)
       val requestDao = InMemoryRequestDao()
       assertThat(this)
-        .prop(RequesterTestScope<Requester>::requester)
+        .prop(RequesterTestScope<Requester<*>>::requester)
         .transform("resumable") { it.resumable(elapsedTimeProvider, requestDao) }
         .all {
           given { firstRequester ->
@@ -81,7 +81,7 @@ internal class ResumableRequesterTests {
 
   @Test
   fun throwsWhenConvertingARequesterIntoAResumableOneWithoutHavingInjectedAContextGlobally() {
-    lateinit var requester: Requester
+    lateinit var requester: Requester<*>
     runRequesterTest { requester = this.requester }
     assertFailure { requester.resumable() }.isInstanceOf<Module.DependencyNotInjectedException>()
   }
@@ -110,7 +110,7 @@ internal class ResumableRequesterTests {
   fun reusesDeleteRequest() {
     assertThat(
         responseCountOf {
-          requester.delete(route)
+          requester.delete(route).getValueOrThrow()
           requester.delete(route)
         }
       )
@@ -121,7 +121,7 @@ internal class ResumableRequesterTests {
   fun reusesGetRequest() {
     assertThat(
         responseCountOf {
-          requester.get(route)
+          requester.get(route).getValueOrThrow()
           requester.get(route)
         }
       )
@@ -132,7 +132,7 @@ internal class ResumableRequesterTests {
   fun reusesPostRequest() {
     assertThat(
         responseCountOf {
-          requester.post(route)
+          requester.post(route).getValueOrThrow()
           requester.post(route)
         }
       )
@@ -143,7 +143,7 @@ internal class ResumableRequesterTests {
   fun stalesGetRequestAfterItsTimeToLiveHasPassed() {
     assertThat(
         responseCountOf {
-          requester.get(route)
+          requester.get(route).getValueOrThrow()
           delay(ResumableRequester.timeToLive + 1.nanoseconds)
           requester.get(route)
         }
@@ -155,7 +155,7 @@ internal class ResumableRequesterTests {
   fun stalesDeleteRequestAfterItsTimeToLiveHasPassed() {
     assertThat(
         responseCountOf {
-          requester.delete(route)
+          requester.delete(route).getValueOrThrow()
           delay(ResumableRequester.timeToLive + 1.nanoseconds)
           requester.delete(route)
         }
@@ -167,7 +167,7 @@ internal class ResumableRequesterTests {
   fun stalesPostRequestAfterItsTimeToLiveHasPassed() {
     assertThat(
         responseCountOf {
-          requester.post(route)
+          requester.post(route).getValueOrThrow()
           delay(ResumableRequester.timeToLive + 1.nanoseconds)
           requester.post(route)
         }

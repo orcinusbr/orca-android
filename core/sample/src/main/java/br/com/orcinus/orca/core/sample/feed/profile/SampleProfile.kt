@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -27,6 +27,7 @@ import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.feed.profile.post.stat.addable.SampleAddableStat
 import br.com.orcinus.orca.ext.uri.URIBuilder
+import br.com.orcinus.orca.std.func.monad.Maybe
 import java.time.ZonedDateTime
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -97,9 +98,13 @@ internal abstract class SampleProfile(private val delegate: Author) : Composer {
 
   /** [OwnedPost] that can be removed from the [Composer]. */
   private inner class SampleOwnedPost(delegate: SamplePost) : OwnedPost(delegate) {
-    override suspend fun remove() {
-      postsFlow.value.find { post -> post.id == id }?.let { postsFlow.value -= it }
-    }
+    override suspend fun remove() =
+      try {
+        postsFlow.value -= postsFlow.value.single { post -> post.id == id }
+        Maybe.successful()
+      } catch (exception: Exception) {
+        Maybe.failed(exception)
+      }
   }
 
   override fun createPost(
