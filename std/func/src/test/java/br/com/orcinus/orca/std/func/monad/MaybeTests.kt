@@ -48,7 +48,7 @@ internal class MaybeTests {
     assertThat(Maybe).successful<Exception, _>(0).prop(Maybe<Exception, Int>::isFailed).isFalse()
 
   @Test
-  fun failsWhenJoiningEachElementOfAFailedIterableIntoASingleResult() =
+  fun failsWhenJoiningEachElementOfAFailedIterableIntoASingleMaybe() =
     assertThat(Maybe)
       .failed<_, List<Int>>(exception)
       .transform("onEach") { maybe -> maybe.onEach { n -> Maybe.successful(n) } }
@@ -56,17 +56,17 @@ internal class MaybeTests {
       .isSameInstanceAs(exception)
 
   @Test
-  fun failsWhenJoiningEachElementOfAResultingIterableIntoASingleResultAndOneOfThemIsAFailure() =
+  fun failsWhenJoiningEachElementOfAResultingIterableIntoASingleMaybeAndOneOfThemIsAFailure() =
     assertThat(Maybe)
       .successful<Exception, _>(listOf(1, 2, 3))
-      .transform("onEach") { result ->
-        result.onEach { n -> if (n % 2 != 0) Maybe.successful(n) else Maybe.failed(exception) }
+      .transform("onEach") { maybe ->
+        maybe.onEach { n -> if (n % 2 != 0) Maybe.successful(n) else Maybe.failed(exception) }
       }
       .isFailed()
       .isSameInstanceAs(exception)
 
   @Test
-  fun joinsEachElementOfAResultingIterableIntoASingleResult() =
+  fun joinsEachElementOfAResultingIterableIntoASingleMaybe() =
     assertThat(Maybe)
       .successful<Exception, _>(listOf(1, 2, 3))
       .transform("onEach") { maybe -> maybe.onEach { n -> Maybe.successful(n * 2) } }
@@ -90,7 +90,7 @@ internal class MaybeTests {
       .isSameInstanceAs(exception)
 
   @Test
-  fun obtainsTheInnerFailureResultWhenGettingTheValueOfTheFlattenedReceiverOne() =
+  fun obtainsTheInnerFailedMaybeWhenGettingTheValueOfTheFlattenedReceiverOne() =
     assertThat(Maybe)
       .successful<Exception, _>(Maybe.failed<_, Any>(exception))
       .prop(Maybe<Exception, Maybe<Exception, Any>>::flatten)
@@ -98,7 +98,7 @@ internal class MaybeTests {
       .isSameInstanceAs(exception)
 
   @Test
-  fun obtainsTheValueOfInnerResultWhenGettingThatOfTheFlattenedReceiverOne() =
+  fun obtainsTheValueOfNestedMaybeWhenGettingThatOfTheFlattenedReceiverOne() =
     assertThat(Maybe)
       .successful<Exception, _>(Maybe.successful<Exception, _>(0))
       .prop(Maybe<Exception, Maybe<Exception, Int>>::flatten)
@@ -106,7 +106,7 @@ internal class MaybeTests {
       .isEqualTo(0)
 
   @Test
-  fun failsWhenConvertingAFailedValueIntoAResultOfUnit() =
+  fun failsWhenConvertingAFailedValueIntoAUnitMaybe() =
     assertThat(Maybe)
       .failed<_, Any>(exception)
       .prop(Maybe<Exception, Any>::unit)
@@ -114,7 +114,7 @@ internal class MaybeTests {
       .isSameInstanceAs(exception)
 
   @Test
-  fun convertsASuccessfulValueIntoAResultOfUnit() =
+  fun convertsASuccessfulValueIntoAUnitMaybe() =
     assertThat(Maybe)
       .successful<Exception, _>(0)
       .prop(Maybe<Exception, Int>::unit)
