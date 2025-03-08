@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,10 +18,9 @@ package br.com.orcinus.orca.feature.profiledetails
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.feed.profile.getPosts
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Creates a sample [ProfileDetails.Default].
@@ -51,8 +50,8 @@ internal fun ProfileDetails.Default.Companion.createSample(
  */
 internal fun ProfileDetails.Default.Companion.getSampleDelegateProfile(
   profileProvider: SampleProfileProvider
-): Profile {
-  return object : Profile {
+) =
+  object : Profile {
     /**
      * [Profile] to which this one's characteristics (expect for its [id]) and behavior is
      * delegated.
@@ -68,8 +67,5 @@ internal fun ProfileDetails.Default.Companion.getSampleDelegateProfile(
     override val followingCount = delegate.followingCount
     override val uri = delegate.uri
 
-    override suspend fun getPosts(page: Int): Flow<List<Post>> {
-      return delegate.getPosts(page)
-    }
+    override suspend fun onPostsObtainance(page: Int) = delegate.getPosts(page).getValueOrThrow()
   }
-}

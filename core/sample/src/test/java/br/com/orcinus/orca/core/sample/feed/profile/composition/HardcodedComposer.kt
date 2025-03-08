@@ -33,7 +33,6 @@ import br.com.orcinus.orca.std.func.monad.Maybe
 import br.com.orcinus.orca.std.markdown.Markdown
 import java.time.ZonedDateTime
 import java.util.UUID
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
@@ -56,13 +55,12 @@ internal class HardcodedComposer : Composer {
       .build()
   override val postsFlow = MutableStateFlow(emptyList<Post>())
 
-  override suspend fun getPosts(page: Int): Flow<List<Post>> {
-    return postsFlow.map {
+  override suspend fun onPostsObtainance(page: Int) =
+    postsFlow.map {
       it.windowed(Composer.MAX_POST_COUNT_PER_PAGE, partialWindows = true).getOrElse(page) {
         emptyList()
       }
     }
-  }
 
   override fun createPost(
     author: Author,

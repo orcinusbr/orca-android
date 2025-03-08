@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -22,13 +22,11 @@ import br.com.orcinus.orca.composite.composable.ComposableFragment
 import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.application
-import br.com.orcinus.orca.platform.navigation.argument
 import br.com.orcinus.orca.std.injector.Injector
 
 class FeedFragment internal constructor() : ComposableFragment() {
   private val module by lazy { Injector.from<FeedModule>() }
   private val backStack by BackStack.from(this)
-  private val userID by argument<String>(USER_ID_KEY)
   private val navigator by lazy { Navigator.create(this, backStack) }
   private val viewModel by
     viewModels<FeedViewModel> {
@@ -37,7 +35,6 @@ class FeedFragment internal constructor() : ComposableFragment() {
         module.profileSearcher(),
         module.feedProvider(),
         module.postProvider(),
-        userID,
         onLinkClick = boundary::navigateTo,
         onThumbnailClickListener = { postID, entrypointIndex, secondary, entrypoint ->
           boundary.navigateToGallery(postID, entrypointIndex, secondary, entrypoint)
@@ -48,8 +45,8 @@ class FeedFragment internal constructor() : ComposableFragment() {
   private val boundary
     get() = module.boundary()
 
-  constructor(backStack: BackStack, userID: String) : this() {
-    arguments = bundleOf(BackStack.KEY to backStack, USER_ID_KEY to userID)
+  constructor(backStack: BackStack) : this() {
+    arguments = bundleOf(BackStack.KEY to backStack)
   }
 
   @Composable
@@ -59,9 +56,5 @@ class FeedFragment internal constructor() : ComposableFragment() {
       onPostClick = { boundary.navigateToPostDetails(navigator, backStack, it) },
       onComposition = { boundary.navigateToComposer() }
     )
-  }
-
-  companion object {
-    private const val USER_ID_KEY = "user-id"
   }
 }

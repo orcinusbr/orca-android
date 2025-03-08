@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,45 +15,55 @@
 
 package br.com.orcinus.orca.core.sample.instance
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isNotEmpty
-import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.sample.auth.actor.sample
+import assertk.assertions.prop
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import kotlin.test.Test
 
 internal class SampleInstanceBuilderTests {
   @Test
-  fun buildsSampleInstanceWithoutDefaultProfilesAndPosts() {
-    val profiles =
-      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
-        .build()
-        .profileProvider
-        .provideCurrent()
-    assertThat(profiles).isEmpty()
-  }
+  fun buildsSampleInstanceWithoutDefaultProfilesAndPosts() =
+    assertThat(SampleInstance.Builder)
+      .transform("create") { it.create(NoOpSampleImageLoader.Provider) }
+      .prop(SampleInstance.Builder.Empty::build)
+      .prop(SampleInstance::profileProvider)
+      .transform("provideCurrent") { it.provideCurrent() }
+      .isEmpty()
 
   @Test
-  fun buildsSampleInstanceWithDefaultProfilesAndWithoutDefaultPosts() {
-    val instance =
-      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider).withDefaultProfiles().build()
-    val profiles = instance.profileProvider.provideCurrent()
-    val feed = instance.feedProvider.provideCurrent(Actor.Authenticated.sample.id, page = 0)
-    assertThat(profiles).isNotEmpty()
-    assertThat(feed).isEmpty()
-  }
+  fun buildsSampleInstanceWithDefaultProfilesAndWithoutDefaultPosts() =
+    assertThat(SampleInstance.Builder)
+      .transform("create") { it.create(NoOpSampleImageLoader.Provider) }
+      .prop(SampleInstance.Builder.Empty::withDefaultProfiles)
+      .prop(SampleInstance.Builder.DefaultProfiles::build)
+      .all {
+        prop(SampleInstance::profileProvider)
+          .transform("provideCurrent") { it.provideCurrent() }
+          .isNotEmpty()
+        prop(SampleInstance::feedProvider)
+          .transform("provideCurrent") { it.provideCurrent(page = 0) }
+          .isSuccessful()
+          .isEmpty()
+      }
 
   @Test
-  fun buildsSampleInstanceWithDefaultProfilesAndPosts() {
-    val instance =
-      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
-        .withDefaultProfiles()
-        .withDefaultPosts()
-        .build()
-    val profiles = instance.profileProvider.provideCurrent()
-    val feed = instance.feedProvider.provideCurrent(Actor.Authenticated.sample.id, page = 0)
-    assertThat(profiles).isNotEmpty()
-    assertThat(feed).isNotEmpty()
-  }
+  fun buildsSampleInstanceWithDefaultProfilesAndPosts() =
+    assertThat(SampleInstance.Builder)
+      .transform("create") { it.create(NoOpSampleImageLoader.Provider) }
+      .prop(SampleInstance.Builder.Empty::withDefaultProfiles)
+      .prop(SampleInstance.Builder.DefaultProfiles::withDefaultPosts)
+      .prop(SampleInstance.Builder.DefaultPosts::build)
+      .all {
+        prop(SampleInstance::profileProvider)
+          .transform("provideCurrent") { it.provideCurrent() }
+          .isNotEmpty()
+        prop(SampleInstance::feedProvider)
+          .transform("provideCurrent") { it.provideCurrent(page = 0) }
+          .isSuccessful()
+          .isNotEmpty()
+      }
 }

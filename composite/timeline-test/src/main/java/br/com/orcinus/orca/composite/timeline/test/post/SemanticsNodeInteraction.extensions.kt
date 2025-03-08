@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -24,12 +24,10 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.link.LinkCard
 import br.com.orcinus.orca.composite.timeline.test.isTimeline
-import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
-import br.com.orcinus.orca.platform.core.sample
 
 /**
  * Scrolls to the first [PostPreview] containing a [GalleryPreview].
@@ -117,7 +115,8 @@ private fun findIndexedPost(
   predicate: (inPagePosts: List<Post>, foundPost: Post) -> Boolean
 ): IndexedValue<Post> {
   return feedProvider
-    .provideCurrent(Actor.Authenticated.sample.id, page)
+    .provideCurrent(page)
+    .getValueOrThrow()
     .ifEmpty { throw NoSuchElementException("No post matching the given predicate was found.") }
     .let { inPagePosts ->
       inPagePosts

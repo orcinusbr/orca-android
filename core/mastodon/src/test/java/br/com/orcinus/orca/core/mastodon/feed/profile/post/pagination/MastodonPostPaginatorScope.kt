@@ -16,17 +16,20 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
 import app.cash.turbine.test
+import assertk.assertThat
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
+import br.com.orcinus.orca.core.feed.Pages
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Page
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.RequesterTestScope
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
+import br.com.orcinus.orca.ext.testing.get
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.statement.request
 import io.ktor.http.Headers
@@ -217,18 +220,26 @@ internal sealed class MastodonPostPaginatorScope(
    * finishes.
    *
    * @param page Page until which pagination should be inclusively performed.
-   * @throws AssertionError If the backing [Flow] emits less than `countPagesOrThrow(page)` [List]s,
+   * @throws AssertionError If the backing [Flow] emits less than `countPagesSafely(page)` [List]s,
    *   completes abruptly or throws.
-   * @throws Pages.InvalidException If the [page] is invalid.
-   * @see Pages.validate
    */
-  @Throws(AssertionError::class, Pages.InvalidException::class)
-  suspend fun paginateToAndAwait(@Page page: Int) {
-    paginateTo(page).test {
-      repeat(countPagesOrThrow(page)) { awaitItem() }
-      awaitComplete()
+  @Throws(AssertionError::class)
+  suspend fun paginateToAndAwait(@Page page: Int) =
+    paginateTo(page).map { postsFlow ->
+      postsFlow.test {
+        repeat(
+          assertThat(this@MastodonPostPaginatorScope)
+            .transform("countPagesSafely") { paginatorScope ->
+              paginatorScope.countPagesSafely(page)
+            }
+            .isSuccessful()
+            .get()
+        ) {
+          awaitItem()
+        }
+        awaitComplete()
+      }
     }
-  }
 
   override fun close() = requestCounting.clear()
 

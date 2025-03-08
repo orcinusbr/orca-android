@@ -16,14 +16,19 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
 import app.cash.turbine.test
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isZero
 import assertk.assertions.prop
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
+import assertk.coroutines.assertions.suspendCall
+import br.com.orcinus.orca.core.feed.Pages
+import br.com.orcinus.orca.ext.testing.get
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import java.net.URI
 import kotlin.test.Test
+import kotlinx.coroutines.launch
 
 internal class MastodonPostPaginatorScopeTests {
   @Test
@@ -35,7 +40,7 @@ internal class MastodonPostPaginatorScopeTests {
 
   @Test
   fun paginatesAndAwaits() = runMastodonPostPaginatorTest {
-    paginateToAndAwait(2_048)
+    assertThat(this).suspendCall("paginateToAndAwait") { paginateToAndAwait(2_048) }.isSuccessful()
     assertThat(initialPage).isEqualTo(2_048)
   }
 
@@ -43,8 +48,9 @@ internal class MastodonPostPaginatorScopeTests {
   fun callsCallbackOnEachRequest() {
     var responseCount = 0
     runMastodonPostPaginatorTest({ _, _, _ -> responseCount++ }) {
-      paginateToAndAwait(256)
-      assertThat(responseCount, name = "responseCount").isEqualTo(countPagesOrThrow(0, 256))
+      assertThat(this).suspendCall("paginateToAndAwait") { paginateToAndAwait(256) }.isSuccessful()
+      assertThat(responseCount, name = "responseCount")
+        .isEqualTo(countPagesSafely(0, 256).getValueOrThrow())
     }
   }
 
@@ -67,21 +73,34 @@ internal class MastodonPostPaginatorScopeTests {
         lastBackwardsPage = page
       }
     }) {
-      val pageCount = countPagesOrThrow(targetPage)
-      paginateTo(targetPage).test {
-        repeat(pageCount) { awaitItemOrThrowCause() }
-        awaitComplete()
-      }
-      paginateTo(0).test {
-        isPaginatingBackwards = true
-        repeat(pageCount) { awaitItemOrThrowCause() }
-        awaitComplete()
+      assertThat(this).all {
+        val pageCount =
+          transform("countPagesSafely") { it.countPagesSafely(targetPage) }.isSuccessful().get()
+        launch {
+          suspendCall("paginateTo") { it.paginateTo(targetPage) }
+            .isSuccessful()
+            .suspendCall("test") {
+              it.test {
+                repeat(pageCount) { awaitItemOrThrowCause() }
+                awaitComplete()
+              }
+            }
+          suspendCall("paginateTo") { it.paginateTo(0) }
+            .isSuccessful()
+            .suspendCall("test") {
+              it.test {
+                isPaginatingBackwards = true
+                repeat(pageCount) { awaitItemOrThrowCause() }
+                awaitComplete()
+              }
+            }
+        }
       }
     }
   }
 
   @Test
-  fun increasesPageQueryParameterOnNextRouteByDefault() {
+  fun increasesPageQueryParameterOnNextRouteByDefault() =
     runMastodonPostPaginatorTest({ _, page, route ->
       if (page > 0) {
         assertThat(route, name = "route")
@@ -93,12 +112,23 @@ internal class MastodonPostPaginatorScopeTests {
           .isEqualTo(page)
       }
     }) {
-      paginateTo(2).test {
-        repeat(countPagesOrThrow(2)) { awaitItemOrThrowCause() }
-        awaitComplete()
+      assertThat(this).all {
+        launch {
+          suspendCall("paginateTo") { it.paginateTo(2) }
+            .isSuccessful()
+            .suspendCall("test") { postsFlow ->
+              postsFlow.test {
+                transform("countPagesSafely") { scope -> scope.countPagesSafely(2) }
+                  .isSuccessful()
+                  .given { pageCount ->
+                    repeat(pageCount) { awaitItemOrThrowCause() }
+                    awaitComplete()
+                  }
+              }
+            }
+        }
       }
     }
-  }
 
   @Test
   fun initialRouteHasNoHitsByDefault() = runMastodonPostPaginatorTest {
@@ -117,9 +147,13 @@ internal class MastodonPostPaginatorScopeTests {
 
   @Test
   fun countsResponses() = runMastodonPostPaginatorTest {
-    repeat(256) { paginateToAndAwait(0) }
+    repeat(256) {
+      assertThat(this).suspendCall("paginateToAndAwait") { paginateToAndAwait(0) }.isSuccessful()
+    }
     assertThat(::routes).prop(Routes::initial).prop(RouteSpec::hitCount).isEqualTo(256)
-    repeat(256) { paginateToAndAwait(1) }
+    repeat(256) {
+      assertThat(this).suspendCall("paginateToAndAwait") { paginateToAndAwait(1) }.isSuccessful()
+    }
     assertThat(::routes).prop(Routes::current).isNotNull().prop(RouteSpec::hitCount).isEqualTo(256)
   }
 }

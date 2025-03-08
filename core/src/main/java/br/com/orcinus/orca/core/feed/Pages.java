@@ -13,14 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page;
+package br.com.orcinus.orca.core.feed;
+
+import br.com.orcinus.orca.std.func.monad.Maybe;
+import org.jetbrains.annotations.NotNull;
 
 /** Utilities for pages. */
 public class Pages {
   /**
    * Marker that denotes an unset page. It is not a valid page itself — passing it as a parameter to
-   * {@link #validate(int)} throws an {@link InvalidException}; rather, it merely indicates that a
-   * page has not yet been defined.
+   * {@link #validate(int)} results in a failure; rather, it merely indicates that a page has not
+   * yet been defined.
    */
   public static final int NONE = -1;
 
@@ -59,12 +62,13 @@ public class Pages {
    * Ensures that the given integer is a valid page.
    *
    * @param page Page whose validity will be checked.
-   * @throws NegativeException If the page is negative.
    */
-  public static void validate(final int page) throws NegativeException {
+  @NotNull
+  public static Maybe<@NotNull InvalidException, @NotNull Integer> validate(final int page) {
     if (page < 0) {
-      throw new NegativeException(page);
+      return Maybe.failed(new NegativeException(page));
     }
+    return Maybe.successful(page);
   }
 
   /**
@@ -72,10 +76,9 @@ public class Pages {
    * otherwise, returns its {@link String} representation.
    */
   private static String name(final int page) {
-    String name = String.valueOf(page);
     if (page == NONE) {
-      name = "NONE";
+      return "NONE";
     }
-    return name;
+    return String.valueOf(page);
   }
 }

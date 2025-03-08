@@ -16,9 +16,9 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination;
 
 import androidx.annotation.NonNull;
+import br.com.orcinus.orca.core.feed.Pages;
 import br.com.orcinus.orca.core.feed.profile.post.Post;
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Page;
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages;
 import io.ktor.client.statement.HttpResponse;
 import kotlinx.coroutines.Deferred;
 

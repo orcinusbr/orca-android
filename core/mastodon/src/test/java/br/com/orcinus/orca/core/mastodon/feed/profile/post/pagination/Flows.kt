@@ -31,5 +31,5 @@ internal suspend fun <T> TurbineTestContext<T>.awaitItemOrThrowCause() =
   try {
     awaitItem()
   } catch (error: AssertionError) {
-    throw checkNotNull(error.cause)
+    throw error.cause ?: error
   }

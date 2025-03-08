@@ -147,4 +147,28 @@ internal class MaybeTests {
       .prop(Maybe<Exception, Int>::unit)
       .isSuccessful()
       .isSameInstanceAs(Unit)
+
+  @Test
+  fun failsWhenCombiningAFailedValueAndASuccessfulOne() =
+    assertThat(Maybe)
+      .failed<_, Any>(exception)
+      .transform("combine") { it.combine(Maybe.successful(0)) { _, _ -> "👩🏻‍💻⛓️‍💥" } }
+      .isFailed()
+      .isSameInstanceAs(exception)
+
+  @Test
+  fun failsWhenCombiningTwoFailedValues() =
+    assertThat(Maybe)
+      .failed<_, Any>(exception)
+      .transform("combine") { it.combine(Maybe.failed<_, Any>(Exception())) { _, _ -> "👤🧱" } }
+      .isFailed()
+      .isSameInstanceAs(exception)
+
+  @Test
+  fun combinesTwoSuccessfulValues() =
+    assertThat(Maybe)
+      .successful<Exception, _>(2)
+      .transform("combine") { it.combine(Maybe.successful(2), Int::times) }
+      .isSuccessful()
+      .isEqualTo(4)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -29,6 +29,17 @@ import org.opentest4j.AssertionFailedError
  * @param T Object on whose [KClass] assertions are to be performed.
  */
 inline fun <reified T : Any> assertThat() = assertk.assertThat(T::class)
+
+/**
+ * Obtains the value on which the assertion is being performed.
+ *
+ * @param T Value to be obtained.
+ */
+fun <T> Assert<T>.get(): T {
+  var value: T? = null
+  given { value = it }
+  @Suppress("UNCHECKED_CAST") return value as T
+}
 
 /**
  * Asserts that the value's properties have the same name and hold data equal to [other]'s. It will
