@@ -43,7 +43,7 @@ class SampleFeedProvider(
   override val termMuter: TermMuter,
   private val imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ) : FeedProvider() {
-  override suspend fun onProvide(page: Int) =
+  override suspend fun onProvision(page: Int) =
     postProvider.postsFlow.map {
       it.chunked(Composer.MAX_POST_COUNT_PER_PAGE).getOrElse(page) { emptyList() }
     }

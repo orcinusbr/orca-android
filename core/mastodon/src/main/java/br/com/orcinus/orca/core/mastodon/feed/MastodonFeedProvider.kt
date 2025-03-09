@@ -35,5 +35,6 @@ internal constructor(
   override val termMuter: TermMuter,
   private val postPaginator: MastodonFeedPaginator
 ) : FeedProvider() {
-  override suspend fun onProvide(@Page page: Int) = postPaginator.paginateTo(page).getValueOrThrow()
+  override suspend fun onProvision(@Page page: Int) =
+    postPaginator.paginateTo(page).getValueOrThrow()
 }

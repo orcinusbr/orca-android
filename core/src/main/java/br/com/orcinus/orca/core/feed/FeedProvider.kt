@@ -22,7 +22,8 @@ import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Provides a user's feed (the [Post]s shown to them based on who they follow) through [onProvide].
+ * Provides a user's feed (the [Post]s shown to them based on who they follow) through
+ * [onProvision].
  */
 abstract class FeedProvider @InternalCoreApi constructor() {
   /** [TermMuter] by which [Post]s with muted terms will be filtered out. */
@@ -35,7 +36,7 @@ abstract class FeedProvider @InternalCoreApi constructor() {
    */
   suspend fun provide(page: Int) =
     Pages.validate(page).map { validPage ->
-      onProvide(validPage).filterEach { post -> !termMuter.isMuted(post.content) }
+      onProvision(validPage).filterEach { post -> !termMuter.isMuted(post.content) }
     }
 
   /**
@@ -43,5 +44,5 @@ abstract class FeedProvider @InternalCoreApi constructor() {
    *
    * @param page Valid page at which the emitted [Post]s are in the feed.
    */
-  protected abstract suspend fun onProvide(page: Int): Flow<List<Post>>
+  protected abstract suspend fun onProvision(page: Int): Flow<List<Post>>
 }

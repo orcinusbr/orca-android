@@ -42,7 +42,7 @@ internal class FeedProviderTests {
         object : FeedProvider() {
           override val termMuter = SampleTermMuter()
 
-          override suspend fun onProvide(page: Int) = emptyFlow<List<Post>>()
+          override suspend fun onProvision(page: Int) = emptyFlow<List<Post>>()
         }
       )
       .suspendCall("provide") { it.provide(page = -1) }
