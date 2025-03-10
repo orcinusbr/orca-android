@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.feed.profile
 
+import br.com.orcinus.orca.core.InternalCoreApi
+import br.com.orcinus.orca.core.feed.Pages
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -53,11 +55,19 @@ interface Profile : Serializable {
   val uri: URI
 
   /**
-   * Gets the [Post]s that have been published by the owner of this [Profile].
+   * Callback called whenever the [Post]s published by the owner of this [Profile] are requested to
+   * be obtained.
    *
-   * @param page Page in which the [Post]s to be obtained are.
+   * @param page Valid page in which the [Post]s to be obtained are.
    */
-  suspend fun getPosts(page: Int): Flow<List<Post>>
+  @InternalCoreApi suspend fun onPostsObtainance(page: Int): Flow<List<Post>>
 
   companion object
 }
+
+/**
+ * Obtains the [Post]s that have been published by the owner of this [Profile].
+ *
+ * @param page Page in which the [Post]s to be obtained are.
+ */
+suspend fun Profile.getPosts(page: Int) = Pages.validate(page).map { onPostsObtainance(it) }

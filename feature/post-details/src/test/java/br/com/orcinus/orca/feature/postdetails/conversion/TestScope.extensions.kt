@@ -211,6 +211,7 @@ internal class PostDetailsConversionScope(delegate: TestScope) : CoroutineScope 
         authenticator,
         authenticationLock,
         feedProvider,
+        termMuter,
         profileProvider,
         profileSearcher,
         postProvider,

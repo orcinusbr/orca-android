@@ -19,9 +19,9 @@ import androidx.annotation.EmptySuper
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
+import br.com.orcinus.orca.core.feed.Pages
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Page
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
@@ -29,6 +29,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.func.monad.combine
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.style.`if`
 import io.ktor.client.statement.HttpResponse
@@ -49,7 +50,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -183,7 +183,6 @@ internal abstract class MastodonPostPaginator<T : Any>(
     pageChannel
       .receiveAsFlow()
       .onEach(Pages::validate)
-      .catch { cause -> cause.takeUnless { it is Pages.InvalidException }?.let { throw it } }
       .runningFold<_, Pagination?>(null) { previousPagination, page ->
         @Suppress("UNCHECKED_CAST")
         val router =
@@ -247,52 +246,38 @@ internal abstract class MastodonPostPaginator<T : Any>(
    * Requests an iteration from the initial page to the given one.
    *
    * @param page Page to which pagination should be inclusively performed.
-   * @throws Pages.InvalidException If the [page] is invalid.
-   * @see Pages.validate
    */
-  @Throws(Pages.InvalidException::class)
-  fun paginateTo(@Page page: Int): Flow<List<Post>> {
-    Pages.validate(page)
-    return channelFlow {
-      val initialPage = this@MastodonPostPaginator.initialPage
-      val pages = if (initialPage <= page) initialPage..page else initialPage downTo page
-      val pageCount = countPages(initialPage, targetPage = pages.last)
-      coroutineScope {
-        launch { postsFlow.take(pageCount).collect(::send) }
-        launch { pages.forEach { setPage(it) } }
+  fun paginateTo(@Page page: Int) =
+    Pages.validate(page).map {
+      channelFlow {
+        val initialPage = this@MastodonPostPaginator.initialPage
+        val pages = if (initialPage <= page) initialPage..page else initialPage downTo page
+        val pageCount = countPages(initialPage, targetPage = pages.last)
+        coroutineScope {
+          launch { postsFlow.take(pageCount).collect(::send) }
+          launch { pages.forEach { setPage(it) } }
+        }
       }
     }
-  }
 
   /**
    * Returns the amount of pages included in the given range.
    *
    * @param targetPage Last page in the range (inclusive).
-   * @throws Pages.InvalidException If the [targetPage] is invalid.
-   * @see Pages.validate
    */
-  @Throws(Pages.InvalidException::class)
   @VisibleForTesting
-  fun countPagesOrThrow(@Page targetPage: Int): Int {
-    Pages.validate(targetPage)
-    return countPages(initialPage, targetPage)
-  }
+  fun countPagesSafely(@Page targetPage: Int) =
+    Pages.validate(targetPage).map { countPages(initialPage, it) }
 
   /**
    * Returns the amount of pages included in the given range.
    *
    * @param initialPage Page from which pagination would start (inclusive).
    * @param targetPage Last page in the range (inclusive).
-   * @throws Pages.InvalidException If either page is invalid.
-   * @see Pages.validate
    */
-  @Throws(Pages.InvalidException::class)
   @VisibleForTesting
-  fun countPagesOrThrow(@Page initialPage: Int, @Page targetPage: Int): Int {
-    Pages.validate(initialPage)
-    Pages.validate(targetPage)
-    return countPages(initialPage, targetPage)
-  }
+  fun countPagesSafely(@Page initialPage: Int, @Page targetPage: Int) =
+    Pages.validate(initialPage).combine(Pages.validate(targetPage), ::countPages)
 
   /** Creates an [URI] to which the initial request should be sent. */
   protected abstract fun HostedURLBuilder.buildInitialRoute(): URI
@@ -373,10 +358,10 @@ internal abstract class MastodonPostPaginator<T : Any>(
   }
 
   /**
-   * Returns the amount of pages included in the given range. Differs from the `countPagesOrThrow`
+   * Returns the amount of pages included in the given range. Differs from the `countPagesSafely`
    * methods in that no validations are performed: because [paginateTo] passes in an always-valid
    * [initialPage] and validates the target one by itself, it is presupposed that the pages are
-   * natural [Int]s and, thus, no [Pages.InvalidException]s are thrown.
+   * natural [Int]s and, thus, the operation does not fail with [Pages.InvalidException]s.
    *
    * @param initialPage Page from which pagination would start (inclusive).
    * @param targetPage Last page in the range (inclusive).

@@ -66,7 +66,11 @@ import br.com.orcinus.orca.std.markdown.buildMarkdown
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-/** [Instance] made out of sample underlying core structures. */
+/**
+ * [Instance] made out of sample underlying core structures.
+ *
+ * @property termMuter [SampleTermMuter] for muting terms in [Post]s from the feed.
+ */
 class SampleInstance
 private constructor(
   override val authenticator: SampleAuthenticator,
@@ -74,7 +78,8 @@ private constructor(
   override val feedProvider: SampleFeedProvider,
   override val profileProvider: SampleProfileProvider,
   override val profileSearcher: SampleProfileSearcher,
-  override val postProvider: SamplePostProvider
+  override val postProvider: SamplePostProvider,
+  val termMuter: SampleTermMuter
 ) : Instance<SampleAuthenticator>() {
   override val domain = Domain.sample
 
@@ -99,6 +104,9 @@ private constructor(
     /** [Instance]-specific [FeedProvider] that provides the [Post]s in the timeline. */
     protected abstract val feedProvider: SampleFeedProvider
 
+    /** [SampleTermMuter] for muting terms in [Post]s from the feed. */
+    protected abstract val termMuter: SampleTermMuter
+
     /** [Instance]-specific [ProfileProvider] for providing [Profile]s. */
     protected abstract val profileProvider: SampleProfileProvider
 
@@ -117,6 +125,7 @@ private constructor(
       override val authenticator: SampleAuthenticator,
       override val authenticationLock: SampleAuthenticationLock,
       override val feedProvider: SampleFeedProvider,
+      override val termMuter: SampleTermMuter,
       override val profileProvider: SampleProfileProvider,
       override val profileSearcher: SampleProfileSearcher,
       override val postProvider: SamplePostProvider,
@@ -128,6 +137,7 @@ private constructor(
           authenticator,
           authenticationLock,
           feedProvider,
+          termMuter,
           profileSearcher,
           profileProvider,
           postProvider,
@@ -148,6 +158,7 @@ private constructor(
       override val authenticator: SampleAuthenticator,
       override val authenticationLock: SampleAuthenticationLock,
       override val feedProvider: SampleFeedProvider,
+      override val termMuter: SampleTermMuter,
       override val profileSearcher: SampleProfileSearcher,
       override val profileProvider: SampleProfileProvider,
       override val postProvider: SamplePostProvider,
@@ -190,6 +201,7 @@ private constructor(
           authenticator,
           authenticationLock,
           feedProvider,
+          termMuter,
           profileSearcher,
           profileProvider,
           postProvider,
@@ -204,6 +216,7 @@ private constructor(
       override val authenticator: SampleAuthenticator,
       override val authenticationLock: SampleAuthenticationLock,
       override val feedProvider: SampleFeedProvider,
+      override val termMuter: SampleTermMuter,
       override val profileSearcher: SampleProfileSearcher,
       override val profileProvider: SampleProfileProvider,
       override val postProvider: SamplePostProvider,
@@ -286,7 +299,8 @@ private constructor(
         feedProvider,
         profileProvider,
         profileSearcher,
-        postProvider
+        postProvider,
+        termMuter
       )
     }
 
@@ -314,6 +328,7 @@ private constructor(
           authenticator,
           authenticationLock,
           feedProvider,
+          termMuter,
           profileProvider,
           profileSearcher,
           postProvider,
@@ -345,6 +360,7 @@ private constructor(
           authenticator,
           authenticationLock,
           feedProvider,
+          termMuter,
           profileProvider,
           profileSearcher,
           postProvider,
@@ -361,6 +377,7 @@ private constructor(
        *   locked or unlocked by an authentication "wall".
        * @param feedProvider [Instance]-specific [FeedProvider] that provides the [Post]s in the
        *   timeline.
+       * @param termMuter [SampleTermMuter] for muting terms in [Post]s from the feed.
        * @param profileProvider [Instance]-specific [ProfileProvider] for providing [Profile]s.
        * @param profileSearcher [Instance]-specific [ProfileSearcher] by which search for [Profile]s
        *   can be made.
@@ -372,21 +389,22 @@ private constructor(
         authenticator: SampleAuthenticator,
         authenticationLock: SampleAuthenticationLock,
         feedProvider: SampleFeedProvider,
+        termMuter: SampleTermMuter,
         profileProvider: SampleProfileProvider,
         profileSearcher: SampleProfileSearcher,
         postProvider: SamplePostProvider,
         imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
-      ): Empty {
-        return Empty(
+      ) =
+        Empty(
           authenticator,
           authenticationLock,
           feedProvider,
+          termMuter,
           profileProvider,
           profileSearcher,
           postProvider,
-          imageLoaderProvider
+          imageLoaderProvider,
         )
-      }
     }
   }
 }

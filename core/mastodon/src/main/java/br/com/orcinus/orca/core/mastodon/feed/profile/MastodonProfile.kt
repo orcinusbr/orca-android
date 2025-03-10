@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -42,10 +42,10 @@ internal data class MastodonProfile(
 ) : Profile {
   private lateinit var postPaginator: MastodonProfilePostPaginator
 
-  override suspend fun getPosts(page: Int): Flow<List<Post>> {
+  override suspend fun onPostsObtainance(page: Int): Flow<List<Post>> {
     if (!::postPaginator.isInitialized) {
       postPaginator = postPaginatorProvider.provide(id)
     }
-    return postPaginator.paginateTo(page)
+    return postPaginator.paginateTo(page).getValueOrThrow()
   }
 }

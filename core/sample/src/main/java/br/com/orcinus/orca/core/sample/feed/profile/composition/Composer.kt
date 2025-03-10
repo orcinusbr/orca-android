@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,6 +18,7 @@
 package br.com.orcinus.orca.core.sample.feed.profile.composition
 
 import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.getPosts
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
@@ -33,13 +34,12 @@ interface Composer : Profile {
   val postsFlow: MutableStateFlow<List<Post>>
     @InternalSampleApi get
 
-  override suspend fun getPosts(page: Int): Flow<List<Post>> {
-    return postsFlow.map {
+  override suspend fun onPostsObtainance(page: Int) =
+    postsFlow.map {
       it.windowed(MAX_POST_COUNT_PER_PAGE, partialWindows = true).getOrElse(page) { _ ->
         emptyList()
       }
     }
-  }
 
   /**
    * Creates a [Post].
@@ -48,7 +48,6 @@ interface Composer : Profile {
    * @param content [Content] that's been composed by the [Author].
    * @param publicationDateTime Zoned moment in time in which the [Post] was published.
    */
-  @InternalSampleApi
   fun createPost(author: Author, content: Content, publicationDateTime: ZonedDateTime): Post
 
   companion object {

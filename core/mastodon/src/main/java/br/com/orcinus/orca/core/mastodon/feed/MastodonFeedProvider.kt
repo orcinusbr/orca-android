@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,15 +15,12 @@
 
 package br.com.orcinus.orca.core.mastodon.feed
 
-import android.content.Context
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.FeedProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
-import br.com.orcinus.orca.core.mastodon.R
-import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
-import kotlinx.coroutines.flow.Flow
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Page
 
 /**
  * [FeedProvider] that requests the feed's [Post]s to the API.
@@ -34,25 +31,10 @@ import kotlinx.coroutines.flow.Flow
  */
 class MastodonFeedProvider
 internal constructor(
-  private val context: Context,
   private val actorProvider: ActorProvider,
   override val termMuter: TermMuter,
   private val postPaginator: MastodonFeedPaginator
 ) : FeedProvider() {
-  override suspend fun containsUser(userID: String): Boolean {
-    return when (actorProvider.provide()) {
-      is Actor.Unauthenticated -> false
-      is Actor.Authenticated -> true
-    }
-  }
-
-  override fun createNonexistentUserException(): NonexistentUserException {
-    return NonexistentUserException(
-      cause = ReadableThrowable(context, R.string.core_mastodon_feed_provisioning_error)
-    )
-  }
-
-  override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-    return postPaginator.paginateTo(page)
-  }
+  override suspend fun onProvision(@Page page: Int) =
+    postPaginator.paginateTo(page).getValueOrThrow()
 }

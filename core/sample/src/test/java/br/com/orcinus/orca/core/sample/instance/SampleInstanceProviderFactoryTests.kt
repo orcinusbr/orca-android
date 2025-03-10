@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,21 +15,26 @@
 
 package br.com.orcinus.orca.core.sample.instance
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isNotEmpty
-import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.sample.auth.actor.sample
+import assertk.assertions.prop
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import kotlin.test.Test
 
 internal class SampleInstanceProviderFactoryTests {
   @Test
-  fun createsASampleInstanceProviderThatProvidesASampleInstanceWithDefaultProfilesAndPostsByDefault() {
-    val imageLoaderProvider = NoOpSampleImageLoader.Provider
-    val providedInstance = SampleInstanceProvider(imageLoaderProvider).provide()
-    val providedProfiles = providedInstance.profileProvider.provideCurrent()
-    val feed = providedInstance.feedProvider.provideCurrent(Actor.Authenticated.sample.id, page = 0)
-    assertThat(providedProfiles).isNotEmpty()
-    assertThat(feed).isNotEmpty()
-  }
+  fun createsASampleInstanceProviderThatProvidesASampleInstanceWithDefaultProfilesAndPostsByDefault() =
+    assertThat(SampleInstanceProvider(NoOpSampleImageLoader.Provider))
+      .prop(SampleInstanceProvider::provide)
+      .all {
+        prop(SampleInstance::profileProvider)
+          .transform("provideCurrent") { it.provideCurrent() }
+          .isNotEmpty()
+        prop(SampleInstance::feedProvider)
+          .transform("provideCurrent") { it.provideCurrent(page = 0) }
+          .isSuccessful()
+          .isNotEmpty()
+      }
 }

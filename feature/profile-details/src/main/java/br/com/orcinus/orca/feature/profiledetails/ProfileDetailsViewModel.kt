@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -24,6 +24,7 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import br.com.orcinus.orca.composite.timeline.post.toPostPreviewFlow
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
+import br.com.orcinus.orca.core.feed.profile.getPosts
 import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
 import br.com.orcinus.orca.ext.coroutines.await
@@ -114,7 +115,7 @@ private constructor(
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun getPostPreviewsAt(index: Int): Flow<List<PostPreview>> {
     return profileFlow.filterNotNull().flatMapConcat { profile ->
-      profile.getPosts(index).flatMapEach(selector = PostPreview::id) { post ->
+      profile.getPosts(index).getValueOrThrow().flatMapEach(selector = PostPreview::id) { post ->
         post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
       }
     }

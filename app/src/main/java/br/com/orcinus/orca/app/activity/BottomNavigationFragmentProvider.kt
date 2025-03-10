@@ -40,7 +40,7 @@ internal enum class BottomNavigationFragmentProvider {
     override val id = R.id.feed
 
     override suspend fun provide(backStack: BackStack, authenticationLock: SomeAuthenticationLock) =
-      authenticationLock.scheduleUnlock { FeedFragment(backStack, it.id) }
+      authenticationLock.scheduleUnlock { FeedFragment(backStack) }
   },
 
   /** Provider of a [Fragment] with the details of the profile of the authenticated [Actor]. */

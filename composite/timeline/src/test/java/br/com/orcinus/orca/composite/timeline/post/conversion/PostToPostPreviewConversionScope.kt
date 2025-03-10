@@ -126,6 +126,7 @@ constructor(delegate: TestScope) : CoroutineScope by delegate {
         authenticator,
         authenticationLock,
         feedProvider,
+        SampleTermMuter(),
         profileProvider,
         profileSearcher,
         postProvider,

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,11 +20,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
-import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.core.image.sample
-import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import kotlin.contracts.ExperimentalContracts
@@ -71,8 +69,7 @@ internal inline fun runFeedViewModelTest(crossinline body: suspend FeedViewModel
         .withDefaultPosts()
         .build()
     val feedProvider = instance.feedProvider
-    val userID = Actor.Authenticated.sample.id
-    val postID = feedProvider.provide(userID, page = 0).first().first().id
+    val postID = feedProvider.provide(page = 0).getValueOrThrow().first().first().id
     val viewModel =
       FeedViewModel(
         application,
@@ -80,7 +77,6 @@ internal inline fun runFeedViewModelTest(crossinline body: suspend FeedViewModel
         instance.profileSearcher,
         feedProvider,
         instance.postProvider,
-        userID,
         onLinkClick = {},
         Disposition.OnThumbnailClickListener.empty
       )

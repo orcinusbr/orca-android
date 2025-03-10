@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -59,7 +59,6 @@ constructor(
   private val profileSearcher: ProfileSearcher,
   private val feedProvider: FeedProvider,
   private val postProvider: PostProvider,
-  private val userID: String,
   private val onLinkClick: (URI) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : AndroidViewModel(application) {
@@ -86,7 +85,7 @@ constructor(
   val postPreviewsLoadableFlow = listLoadableFlow {
     indexFlow
       .combine(postPreviewsLoadableNotifierFlow) { index, _ -> index }
-      .paginate { feedProvider.provide(userID, page = it) }
+      .paginate { feedProvider.provide(page = it).getValueOrThrow() }
       .flatMapEach(selector = PostPreview::id) {
         it.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
       }
@@ -99,7 +98,6 @@ constructor(
     profileSearcher: ProfileSearcher,
     feedProvider: FeedProvider,
     postProvider: PostProvider,
-    userID: String,
     onLinkClick: (URI) -> Unit,
     onThumbnailClickListener: Disposition.OnThumbnailClickListener
   ) : this(
@@ -108,7 +106,6 @@ constructor(
     profileSearcher,
     feedProvider,
     postProvider,
-    userID,
     onLinkClick,
     onThumbnailClickListener
   )
@@ -147,7 +144,6 @@ constructor(
       profileSearcher: ProfileSearcher,
       feedProvider: FeedProvider,
       postProvider: PostProvider,
-      userID: String,
       onLinkClick: (URI) -> Unit,
       onThumbnailClickListener: Disposition.OnThumbnailClickListener
     ): ViewModelProvider.Factory {
@@ -158,7 +154,6 @@ constructor(
             profileSearcher,
             feedProvider,
             postProvider,
-            userID,
             onLinkClick,
             onThumbnailClickListener
           )

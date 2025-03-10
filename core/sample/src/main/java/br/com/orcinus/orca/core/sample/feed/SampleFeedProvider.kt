@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -25,7 +25,6 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -44,31 +43,20 @@ class SampleFeedProvider(
   override val termMuter: TermMuter,
   private val imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ) : FeedProvider() {
-  override fun createNonexistentUserException(): NonexistentUserException {
-    return NonexistentUserException(cause = null)
-  }
-
-  override suspend fun containsUser(userID: String): Boolean {
-    return profileProvider.contains(userID)
-  }
-
-  override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-    return postProvider.postsFlow.map { posts ->
-      posts.chunked(Composer.MAX_POST_COUNT_PER_PAGE).getOrElse(page) { emptyList() }
+  override suspend fun onProvision(page: Int) =
+    postProvider.postsFlow.map {
+      it.chunked(Composer.MAX_POST_COUNT_PER_PAGE).getOrElse(page) { emptyList() }
     }
-  }
 
   /**
    * Provides the feed as it currently is.
    *
-   * @param userID ID of the user whose feed will be provided.
    * @param page Index of the [Post]s that compose the feed.
    */
-  fun provideCurrent(userID: String, page: Int): List<Post> {
+  fun provideCurrent(page: Int) =
     /*
      * SampleFeedProvider's provide(userID, page): Flow<List<Post>>'s flow is composed on top of a
      * state flow; given that the only operation
      */
-    return runBlocking { provide(userID, page).first() }
-  }
+    runBlocking { provide(page).map { it.first() } }
 }

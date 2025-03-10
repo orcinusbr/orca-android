@@ -13,29 +13,33 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page
+package br.com.orcinus.orca.core.feed
 
-import assertk.assertFailure
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isZero
 import assertk.assertions.messageContains
+import br.com.orcinus.orca.std.func.test.monad.isFailed
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import kotlin.test.Test
 
 internal class PagesTests {
   @Test
   fun negativePageIsInvalid() {
-    assertFailure { Pages.validate(-2) }.isInstanceOf<Pages.NegativeException>()
+    assertThat(Pages.validate(-2)).isFailed().isInstanceOf<Pages.NegativeException>()
   }
 
   @Test
   fun noneMarkerIsInvalid() {
-    assertFailure { Pages.validate(Pages.NONE) }.isInstanceOf<Pages.InvalidException>()
+    assertThat(Pages.validate(Pages.NONE)).isFailed().isInstanceOf<Pages.InvalidException>()
   }
 
   @Test
   fun throwsMentioningNoneMarkerWhenValidatingIt() =
-    assertFailure { Pages.validate(Pages.NONE) }.messageContains(Pages::NONE.name)
+    assertThat(Pages.validate(Pages.NONE)).isFailed().messageContains(Pages::NONE.name)
 
-  @Test fun pageZeroIsValid() = Pages.validate(0)
+  @Test fun pageZeroIsValid() = assertThat(Pages.validate(0)).isSuccessful().isZero()
 
-  @Test fun positivePageIsValid() = Pages.validate(1)
+  @Test fun positivePageIsValid() = assertThat(Pages.validate(1)).isSuccessful().isEqualTo(1)
 }

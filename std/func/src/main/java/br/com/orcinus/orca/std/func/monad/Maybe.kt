@@ -36,9 +36,7 @@ package br.com.orcinus.orca.std.func.monad
  * @property value Either a [V] (when successful) or a [Failure] by which the [Exception] is wrapped
  *   (when failed).
  */
-@JvmInline
-value class Maybe<out E : Exception, out V>
-private constructor(@PublishedApi internal val value: Any?) {
+class Maybe<out E : Exception, out V> private constructor(@PublishedApi internal val value: Any?) {
   /** Whether the value has been obtained successfully. */
   val isSuccessful
     get() = !isFailed
@@ -136,6 +134,21 @@ private constructor(@PublishedApi internal val value: Any?) {
 }
 
 /**
+ * Produces a [Maybe] from the successful value of this one and that which has been given.
+ *
+ * @param E [Exception] because of which the value cannot be obtained.
+ * @param V Value resulted from this [Maybe].
+ * @param T Successful value of the given [Maybe].
+ * @param R Successful, combined value.
+ * @param other [Maybe] whose value is transformed into another alongside that of this one.
+ * @param transform Transformation to be applied to both successful values.
+ */
+inline fun <E : Exception, V, T, R> Maybe<E, V>.combine(
+  other: Maybe<E, T>,
+  transform: (V, T) -> R
+) = flatMap { thisValue -> other.map { otherValue -> transform(thisValue, otherValue) } }
+
+/**
  * Transforms each element in the [Iterable] of this [Maybe] and combines the produced [Maybe]s into
  * a single one. That which is returned by this method holds either all successful transformations
  * or the [Exception] thrown by the first failing one.
@@ -157,7 +170,7 @@ inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.onEach(
 
 /**
  * Returns the [Maybe] resulted from the transformation in case it is not a failure; otherwise, the
- * receiver one is cast to `Maybe<E, R>` and returned (which is safe because its successful value is
+ * receiver one is cast to `Maybe<E, T>` and returned (which is safe because its successful value is
  * nonexistent and, thus, unobtainable).
  *
  * @param E [Exception] because of which the value cannot be obtained.
@@ -170,7 +183,7 @@ inline fun <E : Exception, V, T> Maybe<E, V>.flatMap(transform: (V) -> Maybe<E, 
 
 /**
  * Returns the [Maybe] resulted from this one in case this one is not a failure; otherwise, this one
- * is cast to `Maybe<E, R>` and returned (which is safe because its successful value is nonexistent
+ * is cast to `Maybe<E, V>` and returned (which is safe because its successful value is nonexistent
  * and, thus, unobtainable).
  *
  * @param E [Exception] because of which the value cannot be obtained.
