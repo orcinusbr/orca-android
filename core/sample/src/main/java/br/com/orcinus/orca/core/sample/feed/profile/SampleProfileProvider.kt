@@ -41,7 +41,7 @@ class SampleProfileProvider : ProfileProvider() {
     return NonexistentProfileException(cause = null)
   }
 
-  override suspend fun onProvide(id: String): Flow<Composer> {
+  override suspend fun onProvision(id: String): Flow<Composer> {
     return composersFlow.mapNotNull { composers ->
       composers.find { composer -> composer.id == id }
     }

@@ -38,7 +38,7 @@ internal class ProfileProviderTests {
           return false
         }
 
-        override suspend fun onProvide(id: String): Flow<Profile> {
+        override suspend fun onProvision(id: String): Flow<Profile> {
           return emptyFlow()
         }
 

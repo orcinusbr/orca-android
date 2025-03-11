@@ -18,7 +18,7 @@ package br.com.orcinus.orca.core.feed.profile
 import br.com.orcinus.orca.core.InternalCoreApi
 import kotlinx.coroutines.flow.Flow
 
-/** Provides a [Profile] through [onProvide]. */
+/** Provides a [Profile] through [onProvision]. */
 abstract class ProfileProvider @InternalCoreApi constructor() {
   /**
    * [IllegalArgumentException] thrown when a [Profile] that doesn't exist is requested to be
@@ -35,7 +35,7 @@ abstract class ProfileProvider @InternalCoreApi constructor() {
    * @see Profile.id
    */
   suspend fun provide(id: String): Flow<Profile> {
-    return if (contains(id)) onProvide(id) else throw createNonexistentProfileException()
+    return if (contains(id)) onProvision(id) else throw createNonexistentProfileException()
   }
 
   /**
@@ -51,7 +51,7 @@ abstract class ProfileProvider @InternalCoreApi constructor() {
    * @param id ID of the [Profile] to be provided.
    * @see Profile.id
    */
-  protected abstract suspend fun onProvide(id: String): Flow<Profile>
+  protected abstract suspend fun onProvision(id: String): Flow<Profile>
 
   /** Creates a variant-specific [NonexistentProfileException]. */
   protected abstract fun createNonexistentProfileException(): NonexistentProfileException
