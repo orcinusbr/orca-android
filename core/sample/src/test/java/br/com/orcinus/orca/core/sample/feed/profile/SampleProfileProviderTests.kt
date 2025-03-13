@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,10 +20,13 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
+import assertk.assertions.prop
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.account.at
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.feed.profile.post.createRamboSample
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
@@ -32,6 +35,7 @@ import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.ext.uri.URIBuilder
+import br.com.orcinus.orca.std.func.test.monad.isSuccessful
 import br.com.orcinus.orca.std.markdown.Markdown
 import java.util.UUID
 import kotlin.test.Test
@@ -97,8 +101,10 @@ internal class SampleProfileProviderTests {
         followingCount = 0
       )
     profileProvider.add(profile)
-    val providedProfile = profileProvider.provideCurrent(Actor.Authenticated.sample.id)
-    assertThat(providedProfile).isSameAs(profile)
+    assertThat(profileProvider)
+      .transform("provideCurrent") { it.provideCurrent(Actor.Authenticated.sample.id) }
+      .isSuccessful()
+      .isSameInstanceAs(profile)
   }
 
   @Test
@@ -130,25 +136,28 @@ internal class SampleProfileProviderTests {
 
   @Test
   fun updates() {
+    val profileProvider = SampleProfileProvider()
+    val profileDelegate = Author.createRamboSample(NoOpSampleImageLoader.Provider)
+    val profile =
+      SampleFollowableProfile(
+        profileDelegate,
+        /* bio = */ Markdown.empty,
+        Follow.Public.following(),
+        /* followerCount = */ 0,
+        /* followingCount = 0 */ 0
+      )
+    val profileUpdatedBio = Markdown.unstyled("😎")
+    profileProvider.add(profile)
     runTest {
-      val profileProvider = SampleProfileProvider()
-      val profileDelegate = Author.createRamboSample(NoOpSampleImageLoader.Provider)
-      val profile =
-        SampleFollowableProfile(
-          profileDelegate,
-          /* bio = */ Markdown.empty,
-          Follow.Public.following(),
-          /* followerCount = */ 0,
-          /* followingCount = 0 */ 0
-        )
-      val profileUpdatedBio = Markdown.unstyled("😎")
-      profileProvider.add(profile)
       profileProvider.update(profile.id) {
         @Suppress("UNCHECKED_CAST")
         (this as SampleFollowableProfile<Follow.Public>).withBio(profileUpdatedBio)
       }
-      val profileBio = profileProvider.provideCurrent(profile.id).bio
-      assertThat(profileBio).isEqualTo(profileUpdatedBio)
     }
+    assertThat(profileProvider)
+      .transform("provideCurrent") { it.provideCurrent(profile.id) }
+      .isSuccessful()
+      .prop(Composer::bio)
+      .isEqualTo(profileUpdatedBio)
   }
 }

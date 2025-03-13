@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,9 +16,10 @@
 package br.com.orcinus.orca.core.feed.profile
 
 import br.com.orcinus.orca.core.InternalCoreApi
+import br.com.orcinus.orca.std.func.monad.Maybe
 import kotlinx.coroutines.flow.Flow
 
-/** Provides a [Profile] through [onProvision]. */
+/** Provides a [Profile] through [provide]. */
 abstract class ProfileProvider @InternalCoreApi constructor() {
   /**
    * [IllegalArgumentException] thrown when a [Profile] that doesn't exist is requested to be
@@ -28,15 +29,17 @@ abstract class ProfileProvider @InternalCoreApi constructor() {
     IllegalArgumentException("This profile doesn't exist.")
 
   /**
-   * Gets the [Profile] identified as [id].
+   * Provides the [Profile] identified as [id].
    *
    * @param id ID of the [Profile] to be provided.
-   * @throws NonexistentProfileException If no [Profile] with such [ID][Profile.id] exists.
    * @see Profile.id
    */
-  suspend fun provide(id: String): Flow<Profile> {
-    return if (contains(id)) onProvision(id) else throw createNonexistentProfileException()
-  }
+  suspend fun provide(id: String) =
+    if (contains(id)) {
+      Maybe.successful<NonexistentProfileException, _>(onProvision(id))
+    } else {
+      Maybe.failed(createNonexistentProfileException())
+    }
 
   /**
    * Whether a [Profile] identified as [id] exists.
@@ -46,7 +49,7 @@ abstract class ProfileProvider @InternalCoreApi constructor() {
   protected abstract suspend fun contains(id: String): Boolean
 
   /**
-   * Gets the [Profile] identified as [id].
+   * Callback called when a [Profile] is requested to be provided.
    *
    * @param id ID of the [Profile] to be provided.
    * @see Profile.id

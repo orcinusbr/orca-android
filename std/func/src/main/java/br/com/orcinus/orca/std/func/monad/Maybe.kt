@@ -18,13 +18,13 @@
 package br.com.orcinus.orca.std.func.monad
 
 /**
- * Class private to the machinery of [Maybe] that allows for distinguishing between a successful
- * value (whose type is whichever _but_ this one) and a failed value (whose type is _exclusively_
- * this one).
+ * Class internal to the machinery of [Maybe] which allows for distinguishing between a successful
+ * value (whose type is whichever _but_ that of this class) and a failed value (whose type is
+ * _exclusively_ that of this class).
  *
  * @property exception [Exception] resulted from trying to obtain a successful value.
  */
-@JvmInline private value class Failure(val exception: Exception)
+@JvmInline @PublishedApi internal value class Failure(val exception: Exception)
 
 /**
  * Monad that holds either a successful value or an [Exception] because of which such value failed
@@ -58,6 +58,17 @@ class Maybe<out E : Exception, out V> private constructor(@PublishedApi internal
    * consumers, functionally indicating to them only that obtaining the value _may_ throw.
    */
   @Suppress("UNCHECKED_CAST") fun unit() = if (value is Unit) this as Maybe<E, Unit> else map {}
+
+  /**
+   * Produces a [Maybe] whose [Exception] is the result of applying the given transformation to that
+   * of this one. Essentially, acts as a [map] for failures instead of successful values.
+   *
+   * @param T Result of the transformation.
+   * @param transform Transformation to be performed on the [Exception] of this [Maybe].
+   */
+  @Suppress("UNCHECKED_CAST")
+  inline fun <T : Exception> failWith(transform: (E) -> T) =
+    if (isFailed) failed(transform((value as Failure).exception as E)) else this as Maybe<T, V>
 
   /**
    * Produces a [Maybe] whose value is the result of applying the given transformation to that of

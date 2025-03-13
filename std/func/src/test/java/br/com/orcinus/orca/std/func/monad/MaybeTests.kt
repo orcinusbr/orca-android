@@ -17,11 +17,13 @@ package br.com.orcinus.orca.std.func.monad
 
 import assertk.all
 import assertk.assertThat
+import assertk.assertions.cause
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
+import assertk.assertions.isZero
 import assertk.assertions.prop
 import br.com.orcinus.orca.std.func.test.monad.failed
 import br.com.orcinus.orca.std.func.test.monad.isFailed
@@ -171,4 +173,37 @@ internal class MaybeTests {
       .transform("combine") { it.combine(Maybe.successful(2), Int::times) }
       .isSuccessful()
       .isEqualTo(4)
+
+  @Test
+  fun failsWhenMappingAFailedValueToAnotherOne() =
+    assertThat(Maybe)
+      .failed<_, Any>(exception)
+      .transform("map") { it.map { 0 } }
+      .isFailed()
+      .isSameInstanceAs(exception)
+
+  @Test
+  fun mapsASuccessfulValueToAnotherOne() =
+    assertThat(Maybe)
+      .successful<Exception, _>(2)
+      .transform("map") { it.map(2::times) }
+      .isSuccessful()
+      .isEqualTo(4)
+
+  @Test
+  fun failsWithTheTransformedExceptionWhenCallingFailWithOnAFailedValue() =
+    assertThat(Maybe)
+      .failed<_, Any>(exception)
+      .transform("failWith") { it.failWith(::RuntimeException) }
+      .isFailed()
+      .cause()
+      .isSameInstanceAs(exception)
+
+  @Test
+  fun returnsTheSuccessfulValueWhenCallingFailWithOnIt() =
+    assertThat(Maybe)
+      .successful<Exception, _>(0)
+      .transform("failWith") { it.failWith(::RuntimeException) }
+      .isSuccessful()
+      .isZero()
 }

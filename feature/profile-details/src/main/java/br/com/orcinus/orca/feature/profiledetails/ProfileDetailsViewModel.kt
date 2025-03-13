@@ -66,7 +66,9 @@ private constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   private val profileFlow =
-    profileNotifierFlow.flatMapLatest { profileProvider.provide(id).filterNotNull() }
+    profileNotifierFlow.flatMapLatest {
+      profileProvider.provide(id).getValueOrThrow().filterNotNull()
+    }
 
   private val postsIndexFlow = MutableStateFlow(0)
 

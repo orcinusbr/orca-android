@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2023–2024 Orcinus
+  ~ Copyright © 2023–2025 Orcinus
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -33,6 +33,7 @@
     <string name="core_mastodon_feed_provisioning_error">
         O feed não pode ser carregado porque o usuário não existe.
     </string>
+    <string name="core_mastodon_non_followable_profile_error">%s não pode ser seguido.</string>
     <string name="core_mastodon_nonexistent_profile_error">Este perfil não existe.</string>
     <string name="core_mastodon_share">Compartilhar</string>
     <string name="editing_notification_channel">Edições</string>

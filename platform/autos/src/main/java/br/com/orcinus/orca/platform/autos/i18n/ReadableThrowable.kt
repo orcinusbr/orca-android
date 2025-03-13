@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -47,20 +47,23 @@ import java.util.Locale
  *   If this identifier isn't that of a [String] resource, a [Resources.NotFoundException] will be
  *   thrown when either the default or the localized message is retrieved.
  *
+ * @property formatArgs Format arguments by which placeholders in the obtained [String] are
+ *   replaced.
  * @see message
  * @see getLocalizedMessage
  */
 class ReadableThrowable(
   private val context: Context,
-  @StringRes private val messageResourceID: Int
+  @StringRes private val messageResourceID: Int,
+  private vararg val formatArgs: Any?
 ) : Throwable() {
   override val message
     @Throws(IllegalStateException::class, Resources.NotFoundException::class)
-    get() = context.getDefaultString(messageResourceID)
+    get() = context.getDefaultString(messageResourceID, *formatArgs)
 
   @Throws(Resources.NotFoundException::class)
   override fun getLocalizedMessage(): String {
-    return context.getString(messageResourceID)
+    return context.getString(messageResourceID, *formatArgs)
   }
 
   companion object {
@@ -91,6 +94,7 @@ class ReadableThrowable(
  * Obtains a [String] in the default [Locale].
  *
  * @param resourceID Resource ID of the [String] to be obtained.
+ * @param formatArgs The format arguments that will be used for substitution.
  * @throws IllegalStateException If either creating the [Context] with the default [Locale] returns
  *   `null` or such [Context]'s [Resources] are `null`.
  * @throws Resources.NotFoundException If a [String] identified with the [resourceID] isn't found.
@@ -98,7 +102,7 @@ class ReadableThrowable(
  * @see Context.getResources
  */
 @Throws(IllegalStateException::class, Resources.NotFoundException::class)
-private fun Context.getDefaultString(@StringRes resourceID: Int): String {
+private fun Context.getDefaultString(@StringRes resourceID: Int, vararg formatArgs: Any?): String {
   val locale = Locale.getDefault()
-  return at(locale).getString(resourceID)
+  return at(locale).getString(resourceID, *formatArgs)
 }

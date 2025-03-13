@@ -225,6 +225,7 @@ private constructor(
       init {
         profileProvider
           .provideCurrent(Actor.Authenticated.sample.id)
+          .getValueOrThrow()
           .compose(Content.sample)
           .on(ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")))
           .publish(asOwned())
@@ -269,9 +270,14 @@ private constructor(
             }
           )
           .on(ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3")))
-          .publish(asRepostFrom(profileProvider.provideCurrent(ramboSampleAuthorID).toAuthor()))
+          .publish(
+            asRepostFrom(
+              profileProvider.provideCurrent(ramboSampleAuthorID).getValueOrThrow().toAuthor()
+            )
+          )
         profileProvider
           .provideCurrent(christianSampleAuthorID)
+          .getValueOrThrow()
           .compose(
             Content.from(
               Domain.sample,
