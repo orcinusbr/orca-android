@@ -20,6 +20,8 @@ plugins {
 }
 
 dependencies {
+  implementation(libs.kotlin.reflect)
+
   testImplementation(project(":std:func-test"))
   testImplementation(libs.kotlin.test)
 }

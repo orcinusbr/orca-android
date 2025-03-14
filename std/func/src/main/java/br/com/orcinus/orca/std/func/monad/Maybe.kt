@@ -169,15 +169,45 @@ inline fun <E : Exception, V, T, R> Maybe<E, V>.combine(
  * @param T Value resulted from a transformation.
  * @param transform Transforms an element of the value of the receiver [Maybe] into another [Maybe].
  */
+@Deprecated(
+  "\"onEach\" is misleading: the standard Kotlin library uses this name for collection methods " +
+    "which perform a unit operation on each element and, when finished, return the collection " +
+    "itself. On the other hand, this method transforms each element of a successful iterable " +
+    "while requiring that such transformation produces a specific result — another maybe — and " +
+    "joins them, producing a single one (similar to joinTo).",
+  ReplaceWith("join(transform)", imports = ["br.com.orcinus.orca.std.func.monad.join"])
+)
 inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.onEach(
   transform: (V) -> Maybe<E, T>
-) = flatMap { elements ->
-  try {
-    Maybe.successful(elements.map { element -> transform(element).getValueOrThrow() })
-  } catch (exception: Exception) {
-    Maybe.failed(exception as E)
+) = join(transform)
+
+/**
+ * Transforms each element in the [Iterable] of this [Maybe] and combines the produced [Maybe]s into
+ * a single one. That which is returned by this method holds either all successful transformations
+ * or the [Exception] thrown by the first failing one.
+ *
+ * @param E [Exception] because of which the value cannot be obtained.
+ * @param V Value resulted from this [Maybe].
+ * @param T Value resulted from a transformation.
+ * @param transform Transforms an element of the value of the receiver [Maybe] into another [Maybe].
+ * @throws AssertionError If the transformation of an element throws an [Exception] other than [E].
+ */
+@Throws(AssertionError::class)
+inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.join(transform: (V) -> Maybe<E, T>) =
+  flatMap { elements ->
+    val transformations = ArrayList<T>(/* initialCapacity = */ elements.count())
+    for (element in elements) {
+      try {
+        transformations.add(transform(element).getValueOrThrow())
+      } catch (exception: Exception) {
+        assert(exception is E) {
+          "A non-${exception::class.simpleName} ($exception) was thrown while transforming $element."
+        }
+        return@flatMap Maybe.failed(exception)
+      }
+    }
+    Maybe.successful(transformations)
   }
-}
 
 /**
  * Returns the [Maybe] resulted from the transformation in case it is not a failure; otherwise, the

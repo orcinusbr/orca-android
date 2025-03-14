@@ -16,11 +16,13 @@
 package br.com.orcinus.orca.std.func.monad
 
 import assertk.all
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.cause
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
 import assertk.assertions.isZero
@@ -83,6 +85,16 @@ internal class MaybeTests {
       .transform("onEach") { maybe -> maybe.onEach { n -> Maybe.successful(n) } }
       .isFailed()
       .isSameInstanceAs(exception)
+
+  @Test
+  fun failsWhenJoiningEachElementOfAResultingIterableIntoASingleMaybeAndTheTransformationThrowsAnUnexpectedException() {
+    assertFailure {
+        Maybe.successful<UnsupportedOperationException, _>(listOf(1, 2, 3)).join<_, _, Int> {
+          error("👵🏽")
+        }
+      }
+      .isInstanceOf<AssertionError>()
+  }
 
   @Test
   fun failsWhenJoiningEachElementOfAResultingIterableIntoASingleMaybeAndOneOfThemIsAFailure() =
