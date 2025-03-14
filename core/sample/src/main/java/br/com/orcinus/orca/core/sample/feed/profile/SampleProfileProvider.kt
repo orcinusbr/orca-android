@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,6 +20,7 @@ import br.com.orcinus.orca.core.feed.profile.ProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.replacingOnceBy
+import br.com.orcinus.orca.std.func.monad.Maybe
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -41,7 +42,7 @@ class SampleProfileProvider : ProfileProvider() {
     return NonexistentProfileException(cause = null)
   }
 
-  override suspend fun onProvide(id: String): Flow<Composer> {
+  override suspend fun onProvision(id: String): Flow<Composer> {
     return composersFlow.mapNotNull { composers ->
       composers.find { composer -> composer.id == id }
     }
@@ -76,13 +77,12 @@ class SampleProfileProvider : ProfileProvider() {
    * @see Composer.id
    */
   @PublishedApi
-  internal fun provideCurrent(id: String): Composer {
+  internal fun provideCurrent(id: String) =
     /*
      * Profiles emitted to SampleProfileProvider's onProvide(String): Flow<Composer>'s flow are
      * obtained through an in-memory, non-blocking lookup.
      */
-    return runBlocking { provide(id).first() as Composer }
-  }
+    runBlocking { provide(id).map { it.first() as Composer } }
 
   /**
    * Adds various [Composer]s.
@@ -101,13 +101,14 @@ class SampleProfileProvider : ProfileProvider() {
    * @throws ProfileProvider.NonexistentProfileException If no [Composer] with such an ID exists.
    * @see Composer.id
    */
-  internal suspend fun update(id: String, update: Composer.() -> Composer) {
+  internal suspend fun update(id: String, update: Composer.() -> Composer) =
     if (contains(id)) {
-      composersFlow.update { profiles ->
-        profiles.replacingOnceBy(update) { profile -> profile.id == id }
-      }
+      Maybe.successful<NonexistentProfileException, _>(
+        composersFlow.update { profiles ->
+          profiles.replacingOnceBy(update) { profile -> profile.id == id }
+        }
+      )
     } else {
-      throw createNonexistentProfileException()
+      Maybe.failed(createNonexistentProfileException())
     }
-  }
 }

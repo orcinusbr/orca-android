@@ -37,7 +37,7 @@ internal constructor(private val cache: Cache<Profile>, private val context: Con
     return true
   }
 
-  override suspend fun onProvide(id: String): Flow<Profile> {
+  override suspend fun onProvision(id: String): Flow<Profile> {
     val profile = cache.get(id)
     return flowOf(profile)
   }

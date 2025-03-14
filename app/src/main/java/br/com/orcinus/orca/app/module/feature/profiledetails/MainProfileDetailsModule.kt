@@ -31,6 +31,7 @@ internal class MainProfileDetailsModule(context: Context) :
     lazyInjectionOf { profileProvider },
     lazyInjectionOf {
       MastodonFollowService(
+        context,
         Injector.get<Requester<AuthenticationLock.FailedAuthenticationException>>(),
         profileProvider
       )

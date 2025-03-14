@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,7 +17,10 @@ package br.com.orcinus.orca.core.feed.profile.type.followable
 
 import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
+import br.com.orcinus.orca.std.func.monad.Maybe
+import br.com.orcinus.orca.std.func.monad.flatMap
 import kotlinx.coroutines.flow.first
 
 /**
@@ -28,36 +31,40 @@ abstract class FollowService @InternalCoreApi constructor() {
   protected abstract val profileProvider: ProfileProvider
 
   /**
+   * [IllegalArgumentException] thrown when the [Follow] status of a [Profile] that does not exist
+   * or is not followable is requested to be changed — by either toggling it or setting it to that
+   * which succeeds it.
+   */
+  class NonFollowableProfileException @InternalCoreApi constructor(override val cause: Throwable?) :
+    IllegalArgumentException(cause)
+
+  /**
    * Toggles the [Follow] status of the currently authenticated [Actor] regarding the specified
    * [FollowableProfile].
    *
    * @param profileID ID of the [FollowableProfile] to follow, request to follow or unfollow.
-   * @throws IllegalArgumentException If the [profileID] is not that of a [FollowableProfile].
    * @see Follow.toggled
    * @see FollowableProfile.follow
    * @see FollowableProfile.id
    */
-  @Throws(IllegalArgumentException::class)
-  suspend fun toggle(profileID: String) {
-    val profile = getProfile(profileID)
-    setFollow(profile, profile.follow.toggled())
-  }
+  suspend fun toggle(profileID: String) =
+    getProfile(profileID).flatMap { setFollow(it, it.follow.toggled()) }
 
   /**
    * Defines the [Follow] status of the currently authenticated [Actor] regarding the specified
    * [FollowableProfile] as that which follows the current one.
    *
+   * Can fail with a [ProfileProvider.NonexistentProfileException], a
+   * [NonFollowableProfileException] or any [Exception] resulted from attempting to change the
+   * status.
+   *
    * @param profileID ID of the [FollowableProfile].
-   * @throws IllegalArgumentException If the [profileID] is not that of a [FollowableProfile].
    * @see FollowableProfile.follow
    * @see FollowableProfile.id
    * @see Follow.next
    */
-  @Throws(IllegalArgumentException::class)
-  suspend fun next(profileID: String) {
-    val profile = getProfile(profileID)
-    setFollow(profile, profile.follow.next())
-  }
+  suspend fun next(profileID: String) =
+    getProfile(profileID).flatMap { setFollow(it, it.follow.next()) }
 
   /**
    * Defines the [Follow] status of the currently authenticated [Actor] regarding the specified
@@ -67,19 +74,35 @@ abstract class FollowService @InternalCoreApi constructor() {
    * @param profile [FollowableProfile] whose [Follow] status is to be changed.
    * @param follow [Follow] status to be set.
    */
-  protected abstract suspend fun <T : Follow> setFollow(profile: FollowableProfile<T>, follow: T)
+  protected abstract suspend fun <T : Follow> setFollow(
+    profile: FollowableProfile<T>,
+    follow: T
+  ): Maybe<*, Unit>
+
+  /**
+   * Creates a variant-specific [NonFollowableProfileException].
+   *
+   * @param profileID ID of the [Profile] which cannot be followed.
+   */
+  protected abstract fun createNonFollowableProfileException(
+    profileID: String
+  ): NonFollowableProfileException
 
   /**
    * Obtains the [FollowableProfile] identified with the given ID.
    *
+   * Can fail either with a [ProfileProvider.NonexistentProfileException] or a
+   * [NonFollowableProfileException].
+   *
    * @param profileID ID of the [FollowableProfile] to be obtained.
-   * @throws IllegalArgumentException If the [profileID] is not that of a [FollowableProfile].
    * @see FollowableProfile.id
    */
-  @Throws(IllegalArgumentException::class)
-  private suspend fun getProfile(profileID: String): FollowableProfile<Follow> {
-    @Suppress("UNCHECKED_CAST")
-    return profileProvider.provide(profileID).first() as? FollowableProfile<Follow>
-      ?: throw IllegalArgumentException("Profile identified as \"$profileID\" is not followable.")
-  }
+  private suspend fun getProfile(profileID: String) =
+    profileProvider.provide(profileID).flatMap { profileFlow ->
+      @Suppress("UNCHECKED_CAST")
+      (profileFlow.first() as? FollowableProfile<Follow>)?.let { followableProfile ->
+        Maybe.successful(followableProfile)
+      }
+        ?: Maybe.failed(createNonFollowableProfileException(profileID))
+    }
 }
