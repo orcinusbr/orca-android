@@ -27,6 +27,21 @@ package br.com.orcinus.orca.std.func.monad
 @JvmInline @PublishedApi internal value class Failure(val exception: Exception)
 
 /**
+ * [IllegalStateException] thrown if a transformation of [join] throws an [Exception] different from
+ * that specified by the receiver [Maybe].
+ *
+ * @param exception The unexpected [Exception].
+ * @param element Element in the successful [Iterable] of the receiver [Maybe] whose transformation
+ *   caused the unexpected failure.
+ */
+class UnexpectedFailureException
+@PublishedApi
+internal constructor(exception: Exception, element: Any?) :
+  IllegalStateException(
+    "A non-${exception::class.simpleName} ($exception) was thrown while transforming $element."
+  )
+
+/**
  * Monad that holds either a successful value or an [Exception] because of which such value failed
  * to be obtained. Similar to a Kotlin [Result], but different in that it specifies the failure that
  * may occur.
@@ -190,9 +205,10 @@ inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.onEach(
  * @param V Value resulted from this [Maybe].
  * @param T Value resulted from a transformation.
  * @param transform Transforms an element of the value of the receiver [Maybe] into another [Maybe].
- * @throws AssertionError If the transformation of an element throws an [Exception] other than [E].
+ * @throws UnexpectedFailureException If the transformation of an element throws an [Exception]
+ *   other than [E].
  */
-@Throws(AssertionError::class)
+@Throws(UnexpectedFailureException::class)
 inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.join(transform: (V) -> Maybe<E, T>) =
   flatMap { elements ->
     val transformations = ArrayList<T>(/* initialCapacity = */ elements.count())
@@ -200,13 +216,13 @@ inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.join(transform: (
       try {
         transformations.add(transform(element).getValueOrThrow())
       } catch (exception: Exception) {
-        assert(exception is E) {
-          "A non-${exception::class.simpleName} ($exception) was thrown while transforming $element."
+        if (exception !is E) {
+          throw UnexpectedFailureException(exception, element)
         }
         return@flatMap Maybe.failed(exception)
       }
     }
-    Maybe.successful(transformations)
+    Maybe.successful<_, List<T>>(transformations)
   }
 
 /**

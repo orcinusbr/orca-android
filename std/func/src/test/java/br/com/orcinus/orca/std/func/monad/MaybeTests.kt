@@ -93,7 +93,7 @@ internal class MaybeTests {
           error("👵🏽")
         }
       }
-      .isInstanceOf<AssertionError>()
+      .isInstanceOf<UnexpectedFailureException>()
   }
 
   @Test
