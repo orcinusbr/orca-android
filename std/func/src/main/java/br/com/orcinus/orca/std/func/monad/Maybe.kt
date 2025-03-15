@@ -17,6 +17,8 @@
 
 package br.com.orcinus.orca.std.func.monad
 
+import kotlin.reflect.KClass
+
 /**
  * Class internal to the machinery of [Maybe] which allows for distinguishing between a successful
  * value (whose type is whichever _but_ that of this class) and a failed value (whose type is
@@ -30,15 +32,21 @@ package br.com.orcinus.orca.std.func.monad
  * [IllegalStateException] thrown if a transformation of [join] throws an [Exception] different from
  * that specified by the receiver [Maybe].
  *
- * @param exception The unexpected [Exception].
+ * @param expectedExceptionClass [KClass] of the [Exception] that the actual one was expected to be.
+ * @param actualException The unexpected [Exception].
  * @param element Element in the successful [Iterable] of the receiver [Maybe] whose transformation
  *   caused the unexpected failure.
  */
 class UnexpectedFailureException
 @PublishedApi
-internal constructor(exception: Exception, element: Any?) :
+internal constructor(
+  expectedExceptionClass: KClass<out Exception>,
+  actualException: Exception,
+  element: Any?
+) :
   IllegalStateException(
-    "A non-${exception::class.simpleName} ($exception) was thrown while transforming $element."
+    "A non-${expectedExceptionClass.simpleName} ($actualException) was thrown while transforming " +
+      "$element."
   )
 
 /**
@@ -217,7 +225,11 @@ inline fun <reified E : Exception, V, T> Maybe<E, Iterable<V>>.join(transform: (
         transformations.add(transform(element).getValueOrThrow())
       } catch (exception: Exception) {
         if (exception !is E) {
-          throw UnexpectedFailureException(exception, element)
+          throw UnexpectedFailureException(
+            expectedExceptionClass = E::class,
+            actualException = exception,
+            element
+          )
         }
         return@flatMap Maybe.failed(exception)
       }
