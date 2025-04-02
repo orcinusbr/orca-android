@@ -29,7 +29,37 @@ import kotlinx.coroutines.flow.take
 typealias SomeAuthenticationLock = AuthenticationLock<*>
 
 /**
- * Ensures that operations are only performed by an authenticated [Actor].
+ * Lock for ensuring that an operation is only executed in case — and, if not, when — the current
+ * [Actor] is authenticated. This process of either authenticating and executing an operation or
+ * solely doing the latter due to the [Actor] already being authenticated is referred to here as
+ * _unlocking_. Upon an unlock, information such as the ID, name and avatar of the [Actor] can be
+ * obtained, and the aforementioned operation can be executed on their behalf.
+ *
+ * An unlock is performed via scheduling, so it might not be immediate: requesting to schedule one
+ * suspends until every unlock prior to it finishes and, only then, it is performed. The unlock upon
+ * which authentication may occur is called a _primary_ unlock; subsequent ones to which the
+ * authenticated [Actor] is passed to are _secondary_ ones. In a sense, this structure behaves like
+ * a queue.
+ *
+ * E. g.,
+ * ```kotlin
+ * scheduleUnlock { actor -> println("Unlock #1") }
+ *   .flatMap { scheduleUnlock { actor -> delay(2.seconds); println("Unlock #2") } }
+ *   .flatMap { scheduleUnlock { actor -> println("Unlock #3") } }
+ * ```
+ *
+ * In such scenario in which the [Actor] is unauthenticated by the time the first unlock is
+ * scheduled, they would be authenticated on the first unlock, and "Unlock #1" would get printed;
+ * the authenticated [Actor] is, then, reused and passed into the next unlocks: the second one
+ * delays for 2 s — interval in which nothing occurs and the third is on hold —, printing
+ * "Unlock #2" after that; succeeding it comes the printing of "Unlock #3".
+ *
+ * Notice that the authentication process is loosely fallible: can fail not due to it resulting in
+ * an explicit error (since that is not expected), but because the [authenticator] may return an
+ * unauthenticated [Actor] when requested to authenticate. If it does, the primary unlock and all
+ * those which depended on it (that is: were waiting for it to complete normally) are cancelled;
+ * after such failure, an attempt to properly authenticate can be made again by scheduling another
+ * unlock.
  *
  * @param A [Authenticator] to authenticate the [Actor] with.
  * @see scheduleUnlock
@@ -61,7 +91,7 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
    *
    * @param R Type of the [value].
    * @param actor [Actor] that has been authenticated.
-   * @param value [R] that's been returned by the [OnUnlockListener].
+   * @param value [R] that has been returned by the [OnUnlockListener].
    */
   private class Unlock<R>(val actor: Actor.Authenticated, val value: R)
 
@@ -70,16 +100,16 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
     IllegalStateException("Authentication has failed.")
 
   /**
-   * Ensures that the operation in the [listener]'s callback is only performed when the [Actor] is
-   * authenticated; if it isn't, then authentication is requested and, if it succeeds, the operation
-   * is performed.
+   * Ensures that the operation in the callback of the [listener] is only performed when the [Actor]
+   * is authenticated; if it is not, then authentication is requested and, if it succeeds, the
+   * operation is performed.
    *
    * If an unlock has already been requested and is still ongoing, this one is queued for it to be
-   * run as soon as the current finishes (suspending this method's execution flow until then),
-   * reusing the [Actor] that's been first obtained from the [actorProvider] by the preceding
+   * run as soon as the current finishes (suspending the flow of execution of this method until
+   * then), reusing the [Actor] that has been first obtained from the [actorProvider] by the primary
    * unlock.
    *
-   * @param R Value returned by the [listener]'s callback.
+   * @param R Value returned by the callback of the [listener].
    * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    */
   suspend fun <R> scheduleUnlock(listener: OnUnlockListener<R>) =
@@ -100,7 +130,7 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
    * Suspends until the [Continuation] associated to the given [listener] is resumed with the value
    * returned by its [onUnlock][OnUnlockListener.onUnlock] callback.
    *
-   * @param R Value returned by the [listener]'s callback.
+   * @param R Value returned by the callback of the [listener].
    * @param listener [OnUnlockListener] whose returned value will be awaited.
    */
   private suspend fun <R> awaitUnlock(
@@ -111,11 +141,11 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
   }
 
   /**
-   * Ensures that the operation in the [listener]'s callback is only performed when the [Actor] is
-   * authenticated; if it isn't, then authentication is requested and, if it succeeds, the operation
-   * is performed.
+   * Ensures that the operation in the callback of the [listener] is only performed when the [Actor]
+   * is authenticated; if it is not, then authentication is requested and, if it succeeds, the
+   * operation is performed.
    *
-   * @param R Value returned by the [listener]'s callback.
+   * @param R Value returned by the callback of the [listener].
    * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    */
   private suspend fun <R> requestUnlock(
@@ -128,10 +158,10 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
 
   /**
    * Suspends until the [Actor] provided by the [actorProvider] is authenticated, requesting the
-   * authentication process to be performed if it currently isn't. After it's finished, the
+   * authentication process to be performed if it currently is not. After it is finished, the
    * [listener] is notified.
    *
-   * @param R Value returned by the [listener]'s callback.
+   * @param R Value returned by the callback of the [listener].
    * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    */
   private suspend fun <R> requestUnlockWithProvidedActor(
@@ -146,7 +176,7 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
   /**
    * Authenticates and notifies the [listener] if the resulting [Actor] is authenticated.
    *
-   * @param R Value returned by the [listener]'s callback.
+   * @param R Value returned by the callback of the [listener].
    * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    */
   private suspend fun <R> authenticateAndUnlock(

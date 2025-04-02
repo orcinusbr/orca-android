@@ -15,10 +15,12 @@
 
 package br.com.orcinus.orca.core.auth
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
+import assertk.assertions.isZero
 import assertk.coroutines.assertions.suspendCall
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
@@ -52,6 +54,20 @@ internal class AuthenticationLockTests {
         .isFailed()
         .isInstanceOf<AuthenticationLock.FailedAuthenticationException>()
     }
+  }
+
+  @Test
+  fun cancelsUnlocksWhenAuthenticationFails() {
+    val authorizer = AuthorizerBuilder().build()
+    val actorProvider = FixedActorProvider(Actor.Unauthenticated)
+    val lock = AuthenticationLock(authorizer, actorProvider)
+    var unlockCount = 0
+    assertThat(lock).all {
+      runTest {
+        repeat(64) { suspendCall("scheduleUnlock") { it.scheduleUnlock { unlockCount++ } } }
+      }
+    }
+    assertThat(unlockCount, name = "unlockCount").isZero()
   }
 
   @Test
