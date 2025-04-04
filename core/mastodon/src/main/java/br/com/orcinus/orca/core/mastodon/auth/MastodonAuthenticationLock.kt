@@ -39,7 +39,7 @@ class MastodonAuthenticationLock(
   override val authorizer: Authorizer,
   override val authenticator: MastodonAuthenticator,
   override val actorProvider: ActorProvider
-) : AuthenticationLock<MastodonAuthenticator>() {
+) : AuthenticationLock() {
   /** Whether an unlock has not been performed before. */
   private var isOnFirstUnlock = true
 

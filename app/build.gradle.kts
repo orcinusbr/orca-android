@@ -72,8 +72,8 @@ android {
     applicationId = "br.com.orcinus.orca"
     minSdk = libs.versions.android.sdk.min.get().toInt()
     targetSdk = libs.versions.android.sdk.target.get().toInt()
-    versionCode = 8
-    versionName = "v0.5.1"
+    versionCode = 9
+    versionName = "v0.5.2"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 

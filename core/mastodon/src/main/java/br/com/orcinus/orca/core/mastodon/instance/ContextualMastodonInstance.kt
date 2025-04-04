@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.instance
 
 import android.content.Context
-import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
@@ -24,6 +23,7 @@ import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.mastodon.MastodonDatabase
+import br.com.orcinus.orca.core.mastodon.auth.MastodonAuthenticationLock
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
 import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import br.com.orcinus.orca.core.mastodon.feed.MastodonFeedPaginator
@@ -67,7 +67,7 @@ internal class ContextualMastodonInstance(
   authorizer: MastodonAuthorizer,
   override val authenticator: MastodonAuthenticator,
   actorProvider: ActorProvider,
-  override val authenticationLock: AuthenticationLock<MastodonAuthenticator>,
+  override val authenticationLock: MastodonAuthenticationLock,
   termMuter: TermMuter,
   internal val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : MastodonInstance<MastodonAuthorizer, MastodonAuthenticator>(domain, authorizer) {

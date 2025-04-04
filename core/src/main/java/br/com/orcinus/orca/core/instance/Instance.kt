@@ -45,7 +45,7 @@ abstract class Instance<T : Authenticator> @InternalCoreApi constructor() {
    * [Instance]-specific [AuthenticationLock] by which features can be locked or unlocked by an
    * authentication "wall".
    */
-  abstract val authenticationLock: AuthenticationLock<T>
+  abstract val authenticationLock: AuthenticationLock
 
   /** [Instance]-specific [FeedProvider] that provides the [Post]s in the timeline. */
   abstract val feedProvider: FeedProvider
