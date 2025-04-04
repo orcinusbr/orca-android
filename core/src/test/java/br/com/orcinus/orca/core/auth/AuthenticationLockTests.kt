@@ -74,7 +74,7 @@ internal class AuthenticationLockTests {
   fun isNotifiedOfUnlock() {
     var isNotified = false
     val lock =
-      object : AuthenticationLock<Authenticator>() {
+      object : AuthenticationLock() {
         override val authorizer = AuthorizerBuilder().build()
         override val authenticator = SampleAuthenticator()
         override val actorProvider = InMemoryActorProvider()
@@ -95,7 +95,7 @@ internal class AuthenticationLockTests {
   fun isNotifiedOfSubsequentUnlock() {
     var notificationCount = 0
     val lock =
-      object : AuthenticationLock<Authenticator>() {
+      object : AuthenticationLock() {
         override val authorizer = AuthorizerBuilder().build()
         override val authenticator = SampleAuthenticator()
         override val actorProvider = InMemoryActorProvider()

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,6 +23,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import br.com.orcinus.orca.core.instance.InstanceProvider
 import br.com.orcinus.orca.core.instance.domain.Domain
+import br.com.orcinus.orca.core.mastodon.auth.MastodonAuthenticationLock
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
 import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
@@ -49,7 +50,7 @@ class MastodonInstanceProvider(
   private val authorizer: MastodonAuthorizer,
   private val authenticator: MastodonAuthenticator,
   private val actorProvider: ActorProvider,
-  private val authenticationLock: AuthenticationLock<MastodonAuthenticator>,
+  private val authenticationLock: MastodonAuthenticationLock,
   private val termMuter: TermMuter,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : InstanceProvider {

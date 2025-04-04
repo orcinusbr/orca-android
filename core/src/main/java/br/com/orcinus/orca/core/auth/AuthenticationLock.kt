@@ -19,14 +19,19 @@ import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.std.func.monad.Maybe
-import kotlin.coroutines.Continuation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.take
+import kotlinx.atomicfu.AtomicRef
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.updateAndGet
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 /** An [AuthenticationLock] with a generic [Authenticator]. */
-typealias SomeAuthenticationLock = AuthenticationLock<*>
+@Deprecated(
+  "Authentication locks are no longer type-parameterized as of Orca 0.5.2.",
+  ReplaceWith("AuthenticationLock", imports = ["br.com.orcinus.orca.core.auth.AuthenticationLock"])
+)
+typealias SomeAuthenticationLock = AuthenticationLock
 
 /**
  * Lock for ensuring that an operation is only executed in case — and, if not, when — the current
@@ -61,18 +66,12 @@ typealias SomeAuthenticationLock = AuthenticationLock<*>
  * after such failure, an attempt to properly authenticate can be made again by scheduling another
  * unlock.
  *
- * @param A [Authenticator] to authenticate the [Actor] with.
  * @see scheduleUnlock
  */
-abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructor() {
-  /**
-   * Authenticated [Actor] which has been obtained from the [actorProvider] before an initial
-   * unlock.
-   */
-  private val actorFlow = MutableStateFlow<Actor.Authenticated?>(null)
-
-  /** [OnUnlockListener]s of unlocks that are awaiting the one being currently performed. */
-  private val schedule = mutableListOf<OnUnlockListener<*>>()
+abstract class AuthenticationLock @InternalCoreApi constructor() {
+  /** [AtomicRef] to the deferred authenticated [Actor] obtained by a primary unlock. */
+  private val actorDeferredRef =
+    atomic<Deferred<Maybe<FailedAuthenticationException, Actor.Authenticated>>?>(null)
 
   /**
    * [Authorizer] by which the [Actor] will be authorized and from whose resulting authentication
@@ -81,19 +80,10 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
   protected abstract val authorizer: Authorizer
 
   /** [Authenticator] through which the [Actor] will be requested to be authenticated. */
-  protected abstract val authenticator: A
+  protected abstract val authenticator: Authenticator
 
   /** [ActorProvider] whose provided [Actor] will be ensured to be authenticated. */
   protected abstract val actorProvider: ActorProvider
-
-  /**
-   * Result of a successful unlock.
-   *
-   * @param R Type of the [value].
-   * @param actor [Actor] that has been authenticated.
-   * @param value [R] that has been returned by the [OnUnlockListener].
-   */
-  private class Unlock<R>(val actor: Actor.Authenticated, val value: R)
 
   /** [IllegalStateException] resulted from authentication failure. */
   class FailedAuthenticationException @InternalCoreApi constructor(override val cause: Throwable?) :
@@ -113,7 +103,25 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
    * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    */
   suspend fun <R> scheduleUnlock(listener: OnUnlockListener<R>) =
-    actorFlow.value?.let { awaitUnlock(listener) } ?: requestUnlock(listener)
+    actorDeferredRef
+      .updateAndGet { actorDeferred ->
+        if (actorDeferred == null || actorDeferred.isCompleted && actorDeferred.await().isFailed) {
+          coroutineScope {
+            async {
+              (actorProvider.provide() as? Actor.Authenticated
+                  ?: authenticator.authenticate(authorizer.authorize()) as? Actor.Authenticated)
+                ?.let(Maybe.Companion::successful)
+                ?: Maybe.failed(createFailedAuthenticationException())
+            }
+          }
+        } else {
+          actorDeferred
+        }
+      }
+      .let { it as Deferred<Maybe<FailedAuthenticationException, Actor.Authenticated>> }
+      .await()
+      .onSuccessful { onUnlock(it) }
+      .map { listener.onUnlock(it) }
 
   /** Creates a variant-specific [FailedAuthenticationException]. */
   protected abstract fun createFailedAuthenticationException(): FailedAuthenticationException
@@ -125,87 +133,6 @@ abstract class AuthenticationLock<A : Authenticator> @InternalCoreApi constructo
    *   which this listener listened or a previous one.
    */
   protected abstract suspend fun onUnlock(actor: Actor.Authenticated)
-
-  /**
-   * Suspends until the [Continuation] associated to the given [listener] is resumed with the value
-   * returned by its [onUnlock][OnUnlockListener.onUnlock] callback.
-   *
-   * @param R Value returned by the callback of the [listener].
-   * @param listener [OnUnlockListener] whose returned value will be awaited.
-   */
-  private suspend fun <R> awaitUnlock(
-    listener: OnUnlockListener<R>
-  ): Maybe<FailedAuthenticationException, R> {
-    actorFlow.filterNotNull().take(1).collect()
-    return requestUnlock(listener)
-  }
-
-  /**
-   * Ensures that the operation in the callback of the [listener] is only performed when the [Actor]
-   * is authenticated; if it is not, then authentication is requested and, if it succeeds, the
-   * operation is performed.
-   *
-   * @param R Value returned by the callback of the [listener].
-   * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
-   */
-  private suspend fun <R> requestUnlock(
-    listener: OnUnlockListener<R>
-  ): Maybe<FailedAuthenticationException, R> {
-    val unlock = requestUnlockWithProvidedActor(listener).onSuccessful { actorFlow.emit(it.actor) }
-    requestScheduledUnlocks()
-    return unlock.map(Unlock<R>::value)
-  }
-
-  /**
-   * Suspends until the [Actor] provided by the [actorProvider] is authenticated, requesting the
-   * authentication process to be performed if it currently is not. After it is finished, the
-   * [listener] is notified.
-   *
-   * @param R Value returned by the callback of the [listener].
-   * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
-   */
-  private suspend fun <R> requestUnlockWithProvidedActor(
-    listener: OnUnlockListener<R>
-  ): Maybe<FailedAuthenticationException, Unlock<R>> {
-    return when (val actor = actorProvider.provide()) {
-      is Actor.Unauthenticated -> authenticateAndUnlock(listener)
-      is Actor.Authenticated -> Maybe.successful(Unlock(actor, listener.onUnlock(actor)))
-    }
-  }
-
-  /**
-   * Authenticates and notifies the [listener] if the resulting [Actor] is authenticated.
-   *
-   * @param R Value returned by the callback of the [listener].
-   * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
-   */
-  private suspend fun <R> authenticateAndUnlock(
-    listener: OnUnlockListener<R>
-  ): Maybe<FailedAuthenticationException, Unlock<R>> {
-    return when (
-      val actor = authenticator.authenticate(authorizationCode = authorizer.authorize())
-    ) {
-      is Actor.Unauthenticated -> {
-        actorFlow.value = null
-        Maybe.failed(createFailedAuthenticationException())
-      }
-      is Actor.Authenticated -> Maybe.successful(Unlock(actor, listener.onUnlock(actor)))
-    }
-  }
-
-  /**
-   * Requests scheduled unlocks to be performed, resuming their associated [Continuation]s with the
-   * value returned by their [OnUnlockListener]. Since authentication is implied to have already
-   * been performed by a previous unlock, the resulting [Actor] is reused.
-   */
-  private suspend fun requestScheduledUnlocks() {
-    val actor = actorFlow.value ?: return
-    onUnlock(actor)
-    for (listener in schedule) {
-      listener.onUnlock(actor)
-      schedule.remove(listener)
-    }
-  }
 
   companion object
 }

@@ -42,12 +42,12 @@ fun AuthenticationLock(authorizer: Authorizer, actorProvider: ActorProvider) =
  *   authenticated.
  * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be authenticated.
  */
-fun <T : Authenticator> AuthenticationLock(
+fun AuthenticationLock(
   authorizer: Authorizer,
-  authenticator: T,
+  authenticator: Authenticator,
   actorProvider: ActorProvider
 ) =
-  object : AuthenticationLock<T>() {
+  object : AuthenticationLock() {
     override val authorizer = authorizer
     override val authenticator = authenticator
     override val actorProvider = actorProvider

@@ -29,6 +29,7 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:uri"))
   implementation(project(":std:visibility"))
+  implementation(libs.kotlin.atomicfu)
 
   testImplementation(project(":core:sample"))
   testImplementation(project(":core:sample-test"))
