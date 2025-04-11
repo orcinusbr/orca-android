@@ -182,7 +182,6 @@ internal abstract class MastodonPostPaginator<T : Any>(
   private val postsFlow =
     pageChannel
       .receiveAsFlow()
-      .onEach(Pages::validate)
       .runningFold<_, Pagination?>(null) { previousPagination, page ->
         @Suppress("UNCHECKED_CAST")
         val router =

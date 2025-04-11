@@ -23,6 +23,7 @@ import android.view.View
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.autos.forms.Form
 import br.com.orcinus.orca.autos.forms.Forms
+import br.com.orcinus.orca.core.auth.AuthorizationCode
 import br.com.orcinus.orca.std.markdown.style.`if`
 
 /**
@@ -92,6 +93,10 @@ enum class Masker {
       )
     }
   };
+
+  init {
+    AuthorizationCode("")
+  }
 
   /**
    * Obtains the indices at which the radii for the equivalent corner are, as specified by a
