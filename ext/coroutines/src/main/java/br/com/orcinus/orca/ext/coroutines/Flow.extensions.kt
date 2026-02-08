@@ -15,8 +15,6 @@
 
 package br.com.orcinus.orca.ext.coroutines
 
-import br.com.orcinus.orca.ext.coroutines.replacement.ReplacementList
-import br.com.orcinus.orca.ext.coroutines.replacement.replacementListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +46,7 @@ suspend fun <T> Flow<T>.await(): T {
  * @param transform Transformation to be made to the currently iterated element.
  */
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
-  return flatMapEach(accumulator = replacementListOf(), transform)
+  return flatMapEach(key = { it }, transform)
 }
 
 /**
@@ -56,34 +54,23 @@ fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): F
  * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
  * receive an emission.
  *
- * @param selector Provides the value by which each element should be compared when replaced.
- * @param transform Transformation to be made to the currently iterated element.
- */
-fun <I, O, S> Flow<Collection<I>>.flatMapEach(
-  selector: (O) -> S,
-  transform: suspend (I) -> Flow<O>
-): Flow<List<O>> {
-  return flatMapEach(accumulator = replacementListOf(selector = selector), transform)
-}
-
-/**
- * Maps each element of the emitted [Collection]s to the resulting [Flow] of [transform], merging
- * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
- * receive an emission.
- *
- * @param accumulator [ReplacementList] to which the elements in [Collection]s emitted to this
- *   [Flow] will be added.
+ * @param key Provides the value by which each element should be compared when replaced.
  * @param transform Transformation to be made to the currently iterated element.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-private fun <I, O> Flow<Collection<I>>.flatMapEach(
-  accumulator: ReplacementList<O, *>,
+fun <I, O, K> Flow<Collection<I>>.flatMapEach(
+  key: (O) -> K,
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
-  return mapEach { transform(it).onEach(accumulator::add).map { accumulator } }
-    .map(List<Flow<ReplacementList<O, *>>>::merge)
+  val accumulator = LinkedHashMap<K, O>()
+  return mapEach { elements ->
+      transform(elements)
+        .onEach { element -> accumulator[key(element)] = element }
+        .map { accumulator }
+    }
+    .map(List<Flow<LinkedHashMap<K, O>>>::merge)
     .flattenMerge()
-    .map(ReplacementList<O, *>::toList)
+    .map { it.values.toList() }
     .distinctUntilChanged()
 }
 
