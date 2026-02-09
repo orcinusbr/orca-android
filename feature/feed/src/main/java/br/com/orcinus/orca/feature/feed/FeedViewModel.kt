@@ -86,7 +86,7 @@ constructor(
     indexFlow
       .combine(postPreviewsLoadableNotifierFlow) { index, _ -> index }
       .paginate { feedProvider.provide(page = it).getValueOrThrow() }
-      .flatMapEach(selector = PostPreview::id) {
+      .flatMapEach(key = PostPreview::id) {
         it.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
       }
       .map(List<PostPreview>::toSerializableList)
